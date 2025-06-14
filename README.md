@@ -1,5 +1,11 @@
 # RenuxOS — Zig Kernel Era
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/05780bda-8ccc-4c05-a699-7f1d8fdc8d43" alt="Captura de tela_2025-06-14_21-45-52">
+</p>
+
+
+
 Welcome to the new era of **RenuxOS**.
 
 I’m Renan Lucas, the creator of RenuxOS. After a lot of exploration using Rust in the early stages of the project, I decided to take RenuxOS into a new, lighter, and more focused phase — with a full rewrite of the kernel in **Zig**.
