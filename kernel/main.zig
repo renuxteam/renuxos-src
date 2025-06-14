@@ -1,13 +1,19 @@
 const std = @import("std");
+const teste = @import("drivers/video/vga.zig");
 
-const VGA_BUFFER = @as([*]volatile u16, @ptrFromInt(0xB8000));
+// VGA Debug
+const VGA = @as([*]volatile u16, @ptrFromInt(0xb8000));
 
 // Kernel main function
 pub fn kernel_main() void {
-    const attr: u16 = 0x0F << 8; // White text on black background
-    // write OK on VGA
-    VGA_BUFFER[0] = ('O' | attr);
-    VGA_BUFFER[1] = ('K' | attr);
+    // Print RENUXOS in screen using VGA_BUFFER (Text Mode)
+    VGA[0] = (@as(u16, 0x0F) << 8) | 'R';
+    VGA[1] = (@as(u16, 0x0F) << 8) | 'E';
+    VGA[2] = (@as(u16, 0x0F) << 8) | 'N';
+    VGA[3] = (@as(u16, 0x0F) << 8) | 'U';
+    VGA[4] = (@as(u16, 0x0F) << 8) | 'X';
+    VGA[5] = (@as(u16, 0x0F) << 8) | 'O';
+    VGA[6] = (@as(u16, 0x0F) << 8) | 'S';
 
     // Infinite loop to keep the kernel running
     while (true) {

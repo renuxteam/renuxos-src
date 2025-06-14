@@ -22,13 +22,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseSmall });
 
     // Kernel object file
-    const kernel_obj = b.addObject(.{
-        .name = kernel_name,
-        .target = target,
-        .optimize = optimize,
-        .root_source_file = kernel_path,
-        .code_model = .kernel,
-    });
+    const kernel_obj = b.addObject(.{ .name = kernel_name, .target = target, .optimize = optimize, .root_source_file = kernel_path, .code_model = .kernel, .use_llvm = true });
 
     // Kernel file
     const kernel = b.addExecutable(.{
@@ -38,6 +32,11 @@ pub fn build(b: *std.Build) void {
         .code_model = .kernel,
         .use_llvm = true,
     });
+    // Main the kernel
+    const main_name = "main";
+    const main_kernel_path = b.path("kernel/main.zig");
+
+    const main_kernel = b.addObject(.{ .name = main_name, .target = target, .optimize = optimize, .root_source_file = main_kernel_path, .code_model = .kernel, .use_llvm = true });
 
     // ASMs names
     const entry_asm_name = "entry";
@@ -63,7 +62,8 @@ pub fn build(b: *std.Build) void {
 
     // Add the kernel object file
     kernel.addObject(kernel_obj);
-
+    // Add the Main object file
+    kernel.addObject(main_kernel);
     // Add the entry ASM file to the kernel
     kernel.addObject(entry_asm);
     kernel.addObject(multiboot_header);
