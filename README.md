@@ -1,4 +1,6 @@
-# RenuxOS — Zig Kernel Era
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/92774026-3ea6-492f-9de4-f78dd616038b" alt="Captura de tela_2025-06-14_21-45-52">
+</p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/05780bda-8ccc-4c05-a699-7f1d8fdc8d43" alt="Captura de tela_2025-06-14_21-45-52">
