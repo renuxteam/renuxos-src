@@ -21,8 +21,7 @@ set timeout=5
 set default=0
 
 menuentry "RenuxOS" {
-    multiboot2 /boot/kernel
-    set gfxpayload=text
+    multiboot /boot/kernel
     boot
 }
 EOF

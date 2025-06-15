@@ -1,12 +1,10 @@
 const std = @import("std");
-const teste = @import("drivers/video/vga.zig");
+const multiboot = @import("multiboot.zig");
 
-// VGA Debug
-const VGA = @as([*]volatile u16, @ptrFromInt(0xb8000));
+const VGA = @as([*]volatile u16, @ptrFromInt(0xB8000));
 
 // Kernel main function
 pub fn kernel_main() void {
-    // Print RENUXOS in screen using VGA_BUFFER (Text Mode)
     VGA[0] = (@as(u16, 0x0F) << 8) | 'R';
     VGA[1] = (@as(u16, 0x0F) << 8) | 'E';
     VGA[2] = (@as(u16, 0x0F) << 8) | 'N';
