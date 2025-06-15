@@ -59,16 +59,18 @@ pub fn build(b: *std.Build) void {
 
     // Set the linker script for the kernel
     kernel.setLinkerScript(linker_script_path);
-
+    // Add the multiboot_header ASM to the Kernel
+    kernel.addObject(multiboot_header);
     // Add the kernel object file
     kernel.addObject(kernel_obj);
     // Add the Main object file
     kernel.addObject(main_kernel);
     // Add the entry ASM file to the kernel
     kernel.addObject(entry_asm);
-    kernel.addObject(multiboot_header);
     // Disable red zone for the kernel
     kernel.root_module.red_zone = false;
+    // Disable LTO
+    kernel.want_lto = false;
 
     b.installArtifact(kernel);
 }

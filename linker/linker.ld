@@ -2,12 +2,12 @@ ENTRY(_start)
 
 SECTIONS
 {
-    /* Header tem que estar em 0x0 */
-    .multiboot_header ALIGN(4) : {
+    
+    .multiboot_header ALIGN(16) : {
         KEEP(*(.multiboot_header))
     }
 
-    /* Kernel começa a partir de 0x1000, por exemplo */
+    
     . = 0x1000;
 
     .text ALIGN(4K) : {
@@ -27,6 +27,10 @@ SECTIONS
     }
 
     /DISCARD/ : {
+        *(.eh_frame)
+        *(.eh_frame_hdr)
         *(.comment)
+        *(.note.*)
+        *(.debug_*)
     }
 }
