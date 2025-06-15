@@ -1,5 +1,4 @@
 const std = @import("std");
-const multiboot = @import("multiboot.zig");
 
 const VGA = @as([*]volatile u16, @ptrFromInt(0xB8000));
 
