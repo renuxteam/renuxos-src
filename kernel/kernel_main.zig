@@ -5,7 +5,8 @@ const vga = @import("drivers/video/vga.zig");
 pub fn kernel_main() void {
     vga.clear();
     vga.setColor(.LightRed, .Black);
-    vga.fillScreen(' ', .White, .Red);
+    vga.write("Hello World!\n");
+    vga.write("I Love RenuxOS");
     // Infinite loop to keep the kernel running
     loop();
 }
