@@ -1,11 +1,10 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/92774026-3ea6-492f-9de4-f78dd616038b" alt="Captura de tela_2025-06-14_21-45-52">
+  <img src="https://github.com/user-attachments/assets/92774026-3ea6-492f-9de4-f78dd616038b" alt="RenuxOS Logo">
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/05780bda-8ccc-4c05-a699-7f1d8fdc8d43" alt="Captura de tela_2025-06-14_21-45-52">
+  <img src="https://github.com/user-attachments/assets/7362d6ca-32a4-470c-a31a-f6259afd0d98" alt="RenuxOS Hello World">
 </p>
-
 
 
 # 🚀 Welcome to the new era of **RenuxOS**
