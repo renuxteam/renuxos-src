@@ -7,36 +7,37 @@ pub fn build(b: *std.Build) void {
     const kernel_path = b.path("kernel/start.zig");
 
     // Kernel name
-    const kernel_name = "kernel";
+    const kernel_name = "kernel.elf";
 
     // Linker script path
     const linker_script_path = b.path("linker/linker.ld");
 
     // Target options
     const target = b.standardTargetOptions(.{ .default_target = .{
-        .cpu_arch = .x86_64,
+        .cpu_arch = .x86,
         .os_tag = .freestanding,
+        .abi = .none,
     } });
 
     // Optimization settings
-    const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseSmall });
+    const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .Debug });
 
     // Kernel object file
-    const kernel_obj = b.addObject(.{ .name = kernel_name, .target = target, .optimize = optimize, .root_source_file = kernel_path, .code_model = .kernel, .use_llvm = true });
+    const kernel_obj = b.addObject(.{ .name = kernel_name, .target = target, .optimize = optimize, .root_source_file = kernel_path, .use_llvm = true });
 
     // Kernel file
     const kernel = b.addExecutable(.{
         .name = kernel_name,
         .target = target,
         .optimize = optimize,
-        .code_model = .kernel,
+        .linkage = .static,
         .use_llvm = true,
     });
     // Main the kernel
     const main_name = "main";
     const main_kernel_path = b.path("kernel/kernel_main.zig");
 
-    const main_kernel = b.addObject(.{ .name = main_name, .target = target, .optimize = optimize, .root_source_file = main_kernel_path, .code_model = .kernel, .use_llvm = true });
+    const main_kernel = b.addObject(.{ .name = main_name, .target = target, .optimize = optimize, .root_source_file = main_kernel_path, .use_llvm = true });
 
     // ASMs names
     const boot_asm_name = "boot";
@@ -44,6 +45,9 @@ pub fn build(b: *std.Build) void {
 
     // Entry ASM file
     const entry_asm = b.addAssembly(.{ .name = boot_asm_name, .target = target, .optimize = optimize, .source_file = boot_asm_path });
+
+    // VGA asm
+    const clear_screen = b.addAssembly(.{ .name = "clear_screen", .target = target, .optimize = optimize, .source_file = b.path("kernel/drivers/video/clear_screen.s") });
 
     // Set the linker script for the kernel
     kernel.setLinkerScript(linker_script_path);
@@ -53,6 +57,7 @@ pub fn build(b: *std.Build) void {
     kernel.addObject(main_kernel);
     // Add the entry ASM file to the kernel
     kernel.addObject(entry_asm);
+    kernel.addObject(clear_screen);
     // Disable red zone for the kernel
     kernel.root_module.red_zone = false;
     // Disable LTO

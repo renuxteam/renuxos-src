@@ -4,6 +4,7 @@ set -e
 
 # Variabels
 ISO_DIR="iso"
+KERNEL="zig-out/bin/kernel.elf"
 ISO_IMG="renuxos.iso"
 BOOT_DIR="$ISO_DIR/boot"
 GRUB_DIR="$BOOT_DIR/grub"
@@ -13,7 +14,7 @@ rm -rf $ISO_DIR
 mkdir -p $GRUB_DIR
 
 # Copy kernel and other necessary files
-cp zig-out/bin/kernel $BOOT_DIR/kernel
+cp $KERNEL $BOOT_DIR
 
 # Create GRUB configuration
 cat > $GRUB_DIR/grub.cfg << EOF
@@ -21,7 +22,7 @@ set timeout=5
 set default=0
 
 menuentry "RenuxOS" {
-    multiboot /boot/kernel
+    multiboot /boot/kernel.elf
     boot
 }
 EOF
