@@ -46,9 +46,6 @@ pub fn build(b: *std.Build) void {
     // Entry ASM file
     const entry_asm = b.addAssembly(.{ .name = boot_asm_name, .target = target, .optimize = optimize, .source_file = boot_asm_path });
 
-    // VGA asm
-    const clear_screen = b.addAssembly(.{ .name = "clear_screen", .target = target, .optimize = optimize, .source_file = b.path("kernel/drivers/video/clear_screen.s") });
-
     // Set the linker script for the kernel
     kernel.setLinkerScript(linker_script_path);
     // Add the kernel object file
@@ -57,9 +54,11 @@ pub fn build(b: *std.Build) void {
     kernel.addObject(main_kernel);
     // Add the entry ASM file to the kernel
     kernel.addObject(entry_asm);
-    kernel.addObject(clear_screen);
     // Disable red zone for the kernel
     kernel.root_module.red_zone = false;
+    // Disable PIC
+    kernel.root_module.pic = false;
+    main_kernel.root_module.pic = false;
     // Disable LTO
     kernel.want_lto = false;
 

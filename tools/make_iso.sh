@@ -22,7 +22,7 @@ set timeout=5
 set default=0
 
 menuentry "RenuxOS" {
-    multiboot /boot/kernel.elf
+    multiboot2 /boot/kernel.elf
     boot
 }
 EOF
