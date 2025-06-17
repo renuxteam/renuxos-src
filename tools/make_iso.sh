@@ -1,33 +1,10 @@
 #!/usr/bin/bash
-# This script creates an ISO image from the specified directory.
-set -e
 
 # Variabels
-ISO_DIR="iso"
+ISO_BUILD="iso"
 KERNEL="zig-out/bin/kernel.elf"
-ISO_IMG="renuxos.iso"
-BOOT_DIR="$ISO_DIR/boot"
-GRUB_DIR="$BOOT_DIR/grub"
+OUT_ISO="renuxos.iso"
 
-# Clean up previous ISO directory and create necessary directories
-rm -rf $ISO_DIR
-mkdir -p $GRUB_DIR
+cp $KERNEL $ISO_BUILD
 
-# Copy kernel and other necessary files
-cp $KERNEL $BOOT_DIR
-
-# Create GRUB configuration
-cat > $GRUB_DIR/grub.cfg << EOF
-set timeout=5
-set default=0
-
-menuentry "RenuxOS" {
-    multiboot2 /boot/kernel.elf
-    boot
-}
-EOF
-
-# Generate the ISO image
-grub-mkrescue -o $ISO_IMG $ISO_DIR
-
-echo "ISO generated successfully: $ISO_IMG"
+xorriso -as mkisofs   -b limine-bios-cd.bin   -no-emul-boot -boot-load-size 4 -boot-info-table   --efi-boot limine-uefi-cd.bin   -efi-boot-part --efi-boot-image --protective-msdos-label   $ISO_BUILD -o $OUT_ISO
