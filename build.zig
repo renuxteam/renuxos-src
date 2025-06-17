@@ -14,7 +14,7 @@ pub fn build(b: *std.Build) void {
 
     // Target options
     const target = b.standardTargetOptions(.{ .default_target = .{
-        .cpu_arch = .x86,
+        .cpu_arch = .x86_64,
         .os_tag = .freestanding,
         .abi = .none,
     } });
@@ -23,21 +23,21 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .Debug });
 
     // Kernel object file
-    const kernel_obj = b.addObject(.{ .name = kernel_name, .target = target, .optimize = optimize, .root_source_file = kernel_path, .use_llvm = true });
+    const kernel_obj = b.addObject(.{ .name = kernel_name, .target = target, .optimize = optimize, .root_source_file = kernel_path });
 
     // Kernel file
     const kernel = b.addExecutable(.{
         .name = kernel_name,
         .target = target,
         .optimize = optimize,
+        .code_model = .kernel,
         .linkage = .static,
-        .use_llvm = true,
     });
     // Main the kernel
     const main_name = "main";
     const main_kernel_path = b.path("kernel/kernel_main.zig");
 
-    const main_kernel = b.addObject(.{ .name = main_name, .target = target, .optimize = optimize, .root_source_file = main_kernel_path, .use_llvm = true });
+    const main_kernel = b.addObject(.{ .name = main_name, .target = target, .optimize = optimize, .root_source_file = main_kernel_path });
 
     // ASMs names
     const boot_asm_name = "boot";
@@ -61,6 +61,5 @@ pub fn build(b: *std.Build) void {
     main_kernel.root_module.pic = false;
     // Disable LTO
     kernel.want_lto = false;
-
     b.installArtifact(kernel);
 }
