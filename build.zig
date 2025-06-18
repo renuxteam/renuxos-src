@@ -2,7 +2,7 @@ const std = @import("std"); // import the Zig standard library
 
 pub fn build(b: *std.Build) void {
     // Path to the kernel start source file
-    const kernel_path = b.path("kernel/start.zig");
+    const kernel_path = b.path("kernel/kernel_start.zig");
 
     // Name of the generated kernel executable
     const kernel_name = "kernel.elf";
@@ -61,6 +61,16 @@ pub fn build(b: *std.Build) void {
         .source_file = boot_asm_path,
     });
 
+    // Assemble the long mode entry (long_mode.s)
+    const long_mode_name = "long_mode";
+    const long_mode_path = b.path("kernel/boot/long_mode.s");
+    const long_mode_asm = b.addAssembly(.{
+        .name = long_mode_name,
+        .target = target,
+        .optimize = optimize,
+        .source_file = long_mode_path,
+    });
+
     // Apply our custom linker script to the kernel
     kernel.setLinkerScript(linker_script_path);
 
@@ -68,6 +78,7 @@ pub fn build(b: *std.Build) void {
     kernel.addObject(kernel_obj);
     kernel.addObject(main_kernel);
     kernel.addObject(entry_asm);
+    kernel.addObject(long_mode_asm);
 
     // Kernel-specific flags: disable red zone and PIC
     kernel.root_module.red_zone = false;

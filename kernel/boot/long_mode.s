@@ -7,7 +7,7 @@ long_mode_entry:
     # Set up the stack pointer (rsp)
     lea stack_top(%rip), %rsp
     
-    call kernel_main
+    call _kernel_start
 
 .hang:
     cli             # Disable interrupts
