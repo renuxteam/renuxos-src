@@ -7,15 +7,15 @@ pub const LimineBaseRevision = extern struct {
 };
 
 // Declare the global Limine request variable, exported for the bootloader
-pub export var limine_request: LimineBaseRevision = .{};
+pub export var limine_request: LimineBaseRevision = .{}; // exported request struct for Limine
 
 // Import the kernel_main function from another Zig file
-const kernel_main = @import("kernel_main.zig").kernel_main;
+const kernel_main = @import("kernel_main.zig").kernel_main; // bring in kernel_main symbol
 
 // Entry point for the kernel, using C calling convention and never returning
-export fn _kernel_start() callconv(.C) noreturn {
+export fn _start() callconv(.C) noreturn {
     // Call the main kernel function
-    kernel_main();
+    kernel_main(); // jump to kernel_main for primary logic
 
     // Prevent return by looping indefinitely
     while (true) {
