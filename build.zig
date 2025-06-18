@@ -1,16 +1,19 @@
-const std = @import("std"); // import the Zig standard library
+const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    // Path to the kernel start source file
-    const kernel_path = b.path("kernel/kernel_start.zig");
-
-    // Name of the generated kernel executable
-    const kernel_name = "kernel.elf";
-
-    // Path to the custom linker script
+    // Paths
+    const kernel_start_path = b.path("kernel/kernel_start.zig");
+    const kernel_main_path = b.path("kernel/kernel_main.zig");
     const linker_script_path = b.path("linker/linker.ld");
 
-    // Configure target triple: x86_64, freestanding OS, no ABI
+    // Import the limime_zig module
+    const limine_zig = b.dependency("limine_zig", .{ .api_revision = 3 });
+    const limine_module = limine_zig.module("limine");
+
+    // Output kernel name
+    const kernel_name = "kernel.elf";
+
+    // Target and optimization
     const target = b.standardTargetOptions(.{
         .default_target = .{
             .cpu_arch = .x86_64,
@@ -19,75 +22,52 @@ pub fn build(b: *std.Build) void {
         },
     });
 
-    // Use Debug optimization mode
     const optimize = b.standardOptimizeOption(.{
         .preferred_optimize_mode = .Debug,
     });
 
-    // Compile the initial kernel object from start.zig
-    const kernel_obj = b.addObject(.{
-        .name = kernel_name,
+    // Compile kernel_start.zig (entry + Limine)
+    const kernel_start_obj = b.addObject(.{
+        .name = "start",
         .target = target,
         .optimize = optimize,
-        .root_source_file = kernel_path,
+        .root_source_file = kernel_start_path,
+        .code_model = .large,
     });
 
-    // Create the final kernel executable
+    kernel_start_obj.root_module.pic = false;
+    kernel_start_obj.root_module.addImport("limine", limine_module);
+
+    // Compile kernel_main.zig (your logic)
+    const kernel_main_obj = b.addObject(.{
+        .name = "main",
+        .target = target,
+        .optimize = optimize,
+        .root_source_file = kernel_main_path,
+        .code_model = .large,
+    });
+
+    kernel_main_obj.root_module.pic = false;
+    kernel_main_obj.root_module.addImport("limine", limine_module);
+
+    // Final executable
     const kernel = b.addExecutable(.{
         .name = kernel_name,
         .target = target,
         .optimize = optimize,
-        .code_model = .large, // allow large code/data sections
-        .linkage = .static, // static linking
+        .code_model = .large,
+        .linkage = .static,
     });
 
-    // Compile the main kernel code (kernel_main.zig)
-    const main_name = "main";
-    const main_kernel_path = b.path("kernel/kernel_main.zig");
-    const main_kernel = b.addObject(.{
-        .name = main_name,
-        .target = target,
-        .optimize = optimize,
-        .root_source_file = main_kernel_path,
-    });
-
-    // Assemble the boot entry (boot.s)
-    const boot_asm_name = "boot";
-    const boot_asm_path = b.path("kernel/boot/boot.s");
-    const entry_asm = b.addAssembly(.{
-        .name = boot_asm_name,
-        .target = target,
-        .optimize = optimize,
-        .source_file = boot_asm_path,
-    });
-
-    // Assemble the long mode entry (long_mode.s)
-    const long_mode_name = "long_mode";
-    const long_mode_path = b.path("kernel/boot/long_mode.s");
-    const long_mode_asm = b.addAssembly(.{
-        .name = long_mode_name,
-        .target = target,
-        .optimize = optimize,
-        .source_file = long_mode_path,
-    });
-
-    // Apply our custom linker script to the kernel
     kernel.setLinkerScript(linker_script_path);
-
-    // Link in all compiled objects
-    kernel.addObject(kernel_obj);
-    kernel.addObject(main_kernel);
-    kernel.addObject(entry_asm);
-    kernel.addObject(long_mode_asm);
-
-    // Kernel-specific flags: disable red zone and PIC
     kernel.root_module.red_zone = false;
     kernel.root_module.pic = false;
-    main_kernel.root_module.pic = false;
-
-    // Disable link-time optimizations
     kernel.want_lto = false;
 
-    // Install the final kernel artifact (makes it available after build)
+    // Link both objects
+    kernel.addObject(kernel_start_obj);
+    kernel.addObject(kernel_main_obj);
+
+    // Install final ELF
     b.installArtifact(kernel);
 }
