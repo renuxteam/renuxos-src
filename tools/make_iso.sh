@@ -1,10 +1,12 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
-# Variabels
-ISO_BUILD="iso"
+# Variables
+ISO_DIR="iso"
 KERNEL="zig-out/bin/kernel.elf"
 OUT_ISO="renuxos.iso"
 
-cp $KERNEL $ISO_BUILD
+# Copy kernel to ISO directory
+cp "$KERNEL" "$ISO_DIR/boot/"
 
-xorriso -as mkisofs   -b limine-bios-cd.bin   -no-emul-boot -boot-load-size 4 -boot-info-table   --efi-boot limine-uefi-cd.bin   -efi-boot-part --efi-boot-image --protective-msdos-label   $ISO_BUILD -o $OUT_ISO
+# Generate ISO using GRUB
+grub-mkrescue -o "$OUT_ISO" "$ISO_DIR"

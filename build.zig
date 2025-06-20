@@ -1,73 +1,59 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    // Paths
-    const kernel_start_path = b.path("kernel/kernel_start.zig");
-    const kernel_main_path = b.path("kernel/kernel_main.zig");
-    const linker_script_path = b.path("linker/linker.ld");
+    // ==== Paths to source files and linker script ====
+    const kernelMainPath = b.path("kernel/kernel_main.zig");
+    const bootAsmPath = b.path("kernel/boot/boot.s");
+    const linkerScript = b.path("linker/linker.ld");
 
-    // Import the limime_zig module
-    const limine_zig = b.dependency("limine_zig", .{ .api_revision = 3 });
-    const limine_module = limine_zig.module("limine");
-
-    // Output kernel name
-    const kernel_name = "kernel.elf";
-
-    // Target and optimization
+    // ==== Target: 32-bit x86 freestanding environment ====
     const target = b.standardTargetOptions(.{
         .default_target = .{
-            .cpu_arch = .x86_64,
-            .os_tag = .freestanding,
-            .abi = .none,
+            .cpu_arch = .x86, // 32-bit Intel architecture
+            .os_tag = .freestanding, // No OS provided services
+            .abi = .none, // No ABI (bare-metal)
         },
     });
 
-    const optimize = b.standardOptimizeOption(.{
-        .preferred_optimize_mode = .Debug,
-    });
+    // ==== Optimization level (Debug by default) ====
+    const optimize = b.standardOptimizeOption(.{});
 
-    // Compile kernel_start.zig (entry + Limine)
-    const kernel_start_obj = b.addObject(.{
-        .name = "start",
+    // ==== Assemble boot.s (Multiboot header + entry stub) ====
+    const bootObj = b.addObject(.{
+        .name = "boot",
         .target = target,
         .optimize = optimize,
-        .root_source_file = kernel_start_path,
-        .code_model = .large,
     });
+    bootObj.addAssemblyFile(bootAsmPath);
 
-    kernel_start_obj.root_module.pic = false;
-    kernel_start_obj.root_module.addImport("limine", limine_module);
-
-    // Compile kernel_main.zig (your logic)
-    const kernel_main_obj = b.addObject(.{
+    // ==== Compile kernel_main.zig (your 32-bit kernel logic) ====
+    const mainObj = b.addObject(.{
         .name = "main",
         .target = target,
         .optimize = optimize,
-        .root_source_file = kernel_main_path,
-        .code_model = .large,
+        .root_source_file = kernelMainPath,
     });
+    mainObj.root_module.pic = false; // Position-independent code disabled
 
-    kernel_main_obj.root_module.pic = false;
-    kernel_main_obj.root_module.addImport("limine", limine_module);
-
-    // Final executable
+    // ==== Create final ELF executable with custom linker script ====
     const kernel = b.addExecutable(.{
-        .name = kernel_name,
+        .name = "kernel.elf",
         .target = target,
         .optimize = optimize,
-        .code_model = .large,
+        .code_model = .kernel,
         .linkage = .static,
     });
 
-    kernel.setLinkerScript(linker_script_path);
-    kernel.root_module.red_zone = false;
-    kernel.root_module.pic = false;
-    kernel.want_lto = false;
+    // Attach custom linker script for Multiboot loading at 1MB
+    kernel.setLinkerScript(linkerScript);
+    kernel.root_module.red_zone = false; // Disable red zone for freestanding
+    kernel.root_module.pic = false; // Disable PIC
+    kernel.want_lto = false; // No LTO
 
-    // Link both objects
-    kernel.addObject(kernel_start_obj);
-    kernel.addObject(kernel_main_obj);
+    // ==== Link the assembled and compiled objects ====
+    kernel.addObject(bootObj);
+    kernel.addObject(mainObj);
 
-    // Install final ELF
+    // ==== Install final kernel ELF as build artifact ====
     b.installArtifact(kernel);
 }

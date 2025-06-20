@@ -1,7 +1,11 @@
 const std = @import("std"); // import the Zig standard library
 
+const vga = @import("drivers/video/vga/vga.zig");
+
 // Entry point of the kernel
-pub fn kernel_main() void {
+export fn kernel_main() void {
+    vga.clear();
+    vga.write("Hello world!\n");
     loop(); // call infinite loop to prevent returning from the kernel
 }
 
