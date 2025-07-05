@@ -67,25 +67,11 @@ The old Rust-based prototype is still available for reference in the archive:
 
 ## 🚀 Getting Started
 
-We're still in the early stages, but you can already compile and run the kernel.
+Ready to compile and run the kernel? All the detailed instructions, including prerequisites and platform-specific steps, are available on our official project wiki.
 
-**Prerequisites:**
-*   The [Zig](https://ziglang.org/download/) compiler (master branch)
-*   [QEMU](https://www.qemu.org/) for emulation
-*   `grub-mkrescue` to create the boot image
+The wiki is the single source of truth for building and testing RenuxOS.
 
-**Steps:**
-```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/renuxos-src.git
-cd renuxos-src
-
-# 2. Build the kernel
-zig build
-
-# 3. Run in QEMU
-# (Add the command to run it here, e.g., qemu-system-x86_64 -kernel zig-out/bin/renuxos)
-```
+➡️ **[View the Build Guide on the Wiki](https://github.com/renuxteam/renuxos-src/wiki/Bulld-Project)**
 
 ---
 
