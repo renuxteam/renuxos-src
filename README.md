@@ -1,72 +1,111 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/92774026-3ea6-492f-9de4-f78dd616038b" alt="RenuxOS Logo">
+  <img src="https://github.com/user-attachments/assets/92774026-3ea6-492f-9de4-f78dd616038b" alt="RenuxOS Logo" width="400">
+</p>
+
+<p align="center">
+  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig.</strong>
+</p>
+
+<p align="center">
+  <img alt="Main Language" src="https://img.shields.io/badge/language-Zig-orange.svg?style=for-the-badge">
+  <img alt="Project Status" src="https://img.shields.io/badge/status-In%20Development-blue.svg?style=for-the-badge">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge">
+  <a href="https://github.com/renuxteam/renuxos-src_old">
+    <img alt="Legacy Prototype" src="https://img.shields.io/badge/legacy-Rust%20(Archived)-gray.svg?style=for-the-badge">
+  </a>
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7362d6ca-32a4-470c-a31a-f6259afd0d98" alt="RenuxOS Hello World">
 </p>
 
+## 🌀 A New Era for RenuxOS
 
-# 🚀 Welcome to the new era of **RenuxOS**
+Hi, I'm **Renan Lucas**, the creator of RenuxOS.
 
-I’m **Renan Lucas**, the creator of RenuxOS.  
-After a lot of exploration using **Rust** in the early prototype phase, I’ve decided to take RenuxOS into a **new, lighter, and sharper direction** — with a full rewrite (and first real release!) of the kernel in [**Zig**](https://ziglang.org/).
+After a long prototyping and exploration phase with **Rust**, I decided to take RenuxOS in a **lighter, sharper, and more personal direction**. This marked the beginning of a complete rewrite of the kernel (and the first real release!) in [**Zig**](https://ziglang.org/).
 
-This marks the true beginning of a system built for **clarity**, **modularity**, and **hacker-level control** — starting with our very first official version: **Aurora**.
-
----
-
-## 📌 What is RenuxOS?
-
-**RenuxOS** is a neurodivergent-crafted, hacker-focused operating system designed to be:
-
-- 🧠 A **hybrid kernel**, blending microkernel and monolithic features
-- 🧩 **Modular and customizable** down to the core
-- 🛠️ Written mainly in **Zig**, with pieces in **C** and **Assembly**
-- 🗂️ Built from scratch using a **monolithic repository** (`renuxos-src`) to simplify development
+This is the true beginning of a system built on the pillars of **clarity, modularity, and hacker-level control** — starting with our first official version: **Aurora**.
 
 ---
 
-## 🎯 Why rewrite it in Zig?
+## 🎯 Core Principles
 
-While **Rust** is a powerful language, it turned out to be overkill and too heavy for my creative and neurodivergent workflow.  
-As someone with **AuDHD (Autism + ADHD)**, I found that **Zig** just clicks better with how I think and code:
+**RenuxOS** is an operating system crafted by a neurodivergent mind, for enthusiasts and hackers, with the following goals:
 
-- 🧘‍♂️ Less noise from over-complicated compiler errors
-- 💡 A cleaner, more predictable mental model
-- 🔩 Natural integration with **C** and **Assembly**
-- 📦 No external build systems — just `zig build`, and done
+-   🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel.
+-   🧩 **Extreme Modularity:** Allowing every component of the system to be easily replaced or customized.
+-   🛠️ **Built with the Right Tools:** Written primarily in **Zig**, with parts in **C** and **Assembly** where needed, for maximum control and simplicity.
+-   🗂️ **Monorepo:** The entire source code lives in a single repository (`renuxos-src`) to simplify building, development, and collaboration.
 
-> Zig fits my brain better — and that’s exactly what RenuxOS needs to grow.
+### Why Zig?
 
----
+While Rust is a fantastic language, it proved to be overly complex and heavy for my creative workflow. As someone with **AuDHD (Autism + ADHD)**, the simplicity and predictability of Zig align perfectly with how I think and code.
 
-## 🕹️ Project Timeline & Versions
+> **Zig just fits my brain better.**
+> And that's exactly what RenuxOS needs to thrive.
 
-| Codename | Description                              | Status        |
-|----------|------------------------------------------|---------------|
-| 🚧 *(no codename)* | Old Rust-based prototype (never released) | ❌ Abandoned   |
-| 🌅 **Aurora**  | First official release — written in Zig         | 🔨 In progress |
-| 🐆 **Jaguar**  | Future version with more advanced features     | 🔮 Planned     |
-
-You can still find the legacy Rust-based version archived here:  
-👉 [renuxos-src_old (prototype)](https://github.com/renuxteam/renuxos-src_old)
+-   🧘‍♂️ **Less Noise:** Direct and straightforward compiler errors without unnecessary complexity.
+-   💡 **Clean Mental Model:** The language's clarity makes development more intuitive.
+-   🔩 **Natural Integration:** Seamless interoperability with **C** and **Assembly**.
+-   📦 **Integrated Build System:** No more external build systems. Just `zig build`, and you're done.
 
 ---
 
-## 🌈 What's Next?
+## ✨ Features (Roadmap)
 
-This is just the beginning.
+| Version      | Codename    | Status           | Main Focus                                           |
+|--------------|-------------|------------------|------------------------------------------------------|
+| *Prototype*  | *(none)*    | ❌ **Abandoned**  | Initial proof-of-concept in Rust.                    |
+| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Basic Zig kernel, boot, TTY, and modular structure.  |
+| *Future*     | 🐆 **Jaguar** | 🔮 **Planned**   | Memory management, drivers, and multitasking.        |
 
-RenuxOS is my playground — but also a mission: to prove that people who think differently can build **different systems**.  
-I’m not just building an OS, I’m building a vision for hacker freedom, clarity in architecture, and accessibility in complexity.
-
-> Whether you’re neurodivergent, low-level curious, or just love weird cool projects — welcome to the **RenuxOS journey**. 🌀
-
-Stay tuned for dev logs, boot demos, docs and more.  
-Stars, forks, and feedback are super appreciated. ⭐
+The old Rust-based prototype is still available for reference in the archive:  
+👉 **[renuxos-src_old (prototype)](https://github.com/renuxteam/renuxos-src_old)**
 
 ---
 
-🛠 Built with `zig build` and a lot of love,  
+## 🚀 Getting Started
+
+We're still in the early stages, but you can already compile and run the kernel.
+
+**Prerequisites:**
+*   The [Zig](https://ziglang.org/download/) compiler (master branch)
+*   [QEMU](https://www.qemu.org/) for emulation
+*   `grub-mkrescue` to create the boot image
+
+**Steps:**
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/renuxos-src.git
+cd renuxos-src
+
+# 2. Build the kernel
+zig build
+
+# 3. Run in QEMU
+# (Add the command to run it here, e.g., qemu-system-x86_64 -kernel zig-out/bin/renuxos)
+```
+
+---
+
+## 🤝 How to Contribute
+
+This project is a personal journey, but it's also an open door for the community.
+
+> I'm not just building an OS; I'm building a vision for hacker freedom, architectural clarity, and accessibility in complexity.
+
+Whether you're neurodivergent, low-level curious, or just love weird and ambitious projects — **welcome to the RenuxOS journey**.
+
+**Ways you can help:**
+*   ⭐ Star the project to show your support.
+*   🐞 Open an *Issue* to report bugs or suggest ideas.
+*   🛠️ Submit a *Pull Request* with improvements or fixes.
+*   🗣️ Join the discussions and share the project!
+
+Stay tuned for dev logs, demos, and upcoming documentation.
+
+---
+
+🛠️ Built with `zig build` and a lot of love,  
 — Renan Lucas
