@@ -1,59 +1,80 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
-    // ==== Paths to source files and linker script ====
+pub fn build(b: *std.build.Builder) void {
+    // ----------------------------------------------------------------
+    // Paths to source files and linker script
+    // ----------------------------------------------------------------
     const kernelMainPath = b.path("kernel/kernel_main.zig");
     const bootAsmPath = b.path("kernel/boot/boot.s");
     const linkerScript = b.path("linker/linker.ld");
 
-    // ==== Target: 32-bit x86 freestanding environment ====
+    // ----------------------------------------------------------------
+    // Target configuration: 32-bit x86, freestanding (bare-metal)
+    // ----------------------------------------------------------------
     const target = b.standardTargetOptions(.{
         .default_target = .{
-            .cpu_arch = .x86, // 32-bit Intel architecture
-            .os_tag = .freestanding, // No OS provided services
-            .abi = .none, // No ABI (bare-metal)
+            .cpu_arch = .x86, // Intel 32-bit architecture
+            .os_tag = .freestanding, // No operating system services available
+            .abi = .none, // No ABI (bare-metal environment)
         },
     });
 
-    // ==== Optimization level (Debug by default) ====
+    // ----------------------------------------------------------------
+    // Optimization level (debug mode by default)
+    // ----------------------------------------------------------------
     const optimize = b.standardOptimizeOption(.{});
 
-    // ==== Assemble boot.s (Multiboot header + entry stub) ====
+    // ----------------------------------------------------------------
+    // Assemble boot.s: includes the Multiboot2 header and entry stub
+    // ----------------------------------------------------------------
     const bootObj = b.addObject(.{
         .name = "boot",
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+        }),
     });
     bootObj.addAssemblyFile(bootAsmPath);
 
-    // ==== Compile kernel_main.zig (your 32-bit kernel logic) ====
+    // ----------------------------------------------------------------
+    // Compile kernel_main.zig: your 32-bit kernel logic module
+    // ----------------------------------------------------------------
     const mainObj = b.addObject(.{
         .name = "main",
-        .target = target,
-        .optimize = optimize,
-        .root_source_file = kernelMainPath,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = kernelMainPath,
+        }),
     });
-    mainObj.root_module.pic = false; // Position-independent code disabled
+    mainObj.root_module.pic = false; // Disable position-independent code
 
-    // ==== Create final ELF executable with custom linker script ====
+    // ----------------------------------------------------------------
+    // Link final ELF executable with custom linker script
+    // ----------------------------------------------------------------
     const kernel = b.addExecutable(.{
         .name = "kernel.elf",
-        .target = target,
-        .optimize = optimize,
-        .code_model = .kernel,
-        .linkage = .static,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .code_model = .kernel, // Use kernel code model
+        }),
     });
 
-    // Attach custom linker script for Multiboot loading at 1MB
+    // Use custom linker script to place sections at the correct addresses
     kernel.setLinkerScript(linkerScript);
     kernel.root_module.red_zone = false; // Disable red zone for freestanding
     kernel.root_module.pic = false; // Disable PIC
-    kernel.want_lto = false; // No LTO
+    kernel.want_lto = false; // Disable link-time optimization
 
-    // ==== Link the assembled and compiled objects ====
+    // ----------------------------------------------------------------
+    // Combine assembled and compiled object files into the final ELF
+    // ----------------------------------------------------------------
     kernel.addObject(bootObj);
     kernel.addObject(mainObj);
 
-    // ==== Install final kernel ELF as build artifact ====
+    // ----------------------------------------------------------------
+    // Install the kernel ELF as a build artifact
+    // ----------------------------------------------------------------
     b.installArtifact(kernel);
 }
