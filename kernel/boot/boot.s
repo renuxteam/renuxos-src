@@ -1,23 +1,30 @@
-.section .multiboot
-.align 4
-    .long 0x1BADB002        # Multiboot Magic
-    .long 0x00000003        # Flags: memory info + boot device
-    .long -(0x1BADB002 + 0x00000003)
+.section .multiboot2
+.align 8
+
+    # Multiboot2 magic + header length
+    .long 0xe85250d6          # Magic number
+    .long 0                   # Architecture (0 = 32-bit)
+    .long multiboot_end - multiboot_header  # Header length
+    .long -(0xe85250d6 + 0 + (multiboot_end - multiboot_header)) # Checksum
+
+multiboot_header:
+
+    # Optional tags: just end tag here
+    .align 8
+    .short 0                  # Type: end tag
+    .short 0
+    .long 8                   # Size of end tag
+
+multiboot_end:
 
 .section .text
-.global _start
-.extern kernel_main
-
-_start:
-    mov $stack_top, %esp       # <-- inicializa a stack!
-    call kernel_main            # chama o kernel
-1:
-    cli
+.type _start, @function
+.hang:
     hlt
-    jmp 1b
+    jmp .hang
 
 .section .bss
 .align 16
 stack_bottom:
-    .skip 16384                # 16 KiB de pilha (pode aumentar depois)
+    .skip 0x4000             # 16KB stack
 stack_top:

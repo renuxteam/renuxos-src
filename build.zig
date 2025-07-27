@@ -1,10 +1,10 @@
 const std = @import("std");
 
-pub fn build(b: *std.build.Builder) void {
+pub fn build(b: *std.Build) void {
     // ----------------------------------------------------------------
     // Paths to source files and linker script
     // ----------------------------------------------------------------
-    const kernelMainPath = b.path("kernel/kernel_main.zig");
+    const kernelMainPath = b.path("kernel/start.zig");
     const bootAsmPath = b.path("kernel/boot/boot.s");
     const linkerScript = b.path("linker/linker.ld");
 
@@ -13,7 +13,7 @@ pub fn build(b: *std.build.Builder) void {
     // ----------------------------------------------------------------
     const target = b.standardTargetOptions(.{
         .default_target = .{
-            .cpu_arch = .x86, // Intel 32-bit architecture
+            .cpu_arch = .x86, // Intel 32-bit architecture (i386)
             .os_tag = .freestanding, // No operating system services available
             .abi = .none, // No ABI (bare-metal environment)
         },

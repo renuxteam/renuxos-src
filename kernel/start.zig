@@ -1,6 +1,6 @@
 const std = @import("std");
-const kernel_main = @import("kernel_main.zig");
+const main = @import("main.zig");
 
-export fn _start() noreturn {
-    kernel_main();
+export fn _start() void {
+    main.kernel_main();
 }
