@@ -1,5 +1,5 @@
-const fmt = @import("std").fmt;
-const vga = @import("../vga/vga.zig");
+const fmt: type = @import("std").fmt;
+const vga: type = @import("../vga/vga.zig");
 
 pub fn print(comptime format: []const u8, args: anytype) void {
     var buffer: [512]u8 = undefined;
