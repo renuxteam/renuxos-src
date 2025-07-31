@@ -1,7 +1,11 @@
 const vga: type = @import("../drivers/video/vga/vga.zig"); // Import VGA text-mode driver
 const color: type = vga.Color; // Alias VGA color definitions
-
-// ASCII art logo stored as a pointer to a fixed-size byte array
+// ----------------------------------------------------------------
+// ASCII art logo
+// ----------------------------------------------------------------
+// Stored as a pointer to a fixed-size, null-terminated byte array.
+// The leading "\\" escapes each backslash so that the art is
+// embedded exactly as written.
 pub const logo: *const [300:0]u8 = (
     \\
     \\ _____                             ____    _____ 
@@ -12,8 +16,10 @@ pub const logo: *const [300:0]u8 = (
     \\|_|  \_\\___||_| |_| \__,_|/_/\_\ \____/ |_____/ 
 );
 
-// Sets text colors and prints the ASCII logo to the screen
+// ----------------------------------------------------------------
+// print_logo: render the ASCII art on screen
+// ----------------------------------------------------------------
 pub fn print_logo() void {
-    vga.setColor(color.Green, color.Black); // Foreground=Green, Background=Black
-    vga.write(logo); // Render the logo string via VGA driver
+    vga.setColor(color.Green, color.Black);
+    vga.write(logo);
 }

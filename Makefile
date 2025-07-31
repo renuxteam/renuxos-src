@@ -15,7 +15,7 @@ iso: build
 
 # Build ISO (if needed) and launch QEMU with the resulting CD image
 run: iso
-	qemu-system-i386 -cdrom renuxos.iso --enable-kvm
+	qemu-system-i386 -cdrom renuxos.iso --enable-kvm -vga virtio
 
 # Clean build outputs and ISO
 clean:

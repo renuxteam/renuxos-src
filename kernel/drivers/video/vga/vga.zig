@@ -1,6 +1,8 @@
 const std = @import("std"); // Import Zig’s standard library (reserved for future use)
 
-// Define text color codes for VGA text mode
+// ----------------------------------------------------------------
+// VGA text-mode color definitions
+// ----------------------------------------------------------------
 pub const Color = enum(u4) {
     Black = 0,
     Blue = 1,
@@ -20,30 +22,38 @@ pub const Color = enum(u4) {
     White = 15,
 };
 
-// Combine a foreground and background color into a single byte
+// ----------------------------------------------------------------
+// Pack foreground and background colors into a single byte
+// ----------------------------------------------------------------
 pub fn vgaEntryColor(fg: Color, bg: Color) u8 {
-    return @as(u8, @intFromEnum(fg)) // low 4 bits = foreground
-    | (@as(u8, @intFromEnum(bg)) << 4); // high 4 bits = background
+    // Lower 4 bits: foreground color, Upper 4 bits: background color
+    return @as(u8, @intFromEnum(fg)) | (@as(u8, @intFromEnum(bg)) << 4);
 }
 
-// Pack a character byte and a color byte into a 16-bit VGA entry
+// ----------------------------------------------------------------
+// Pack an ASCII character and color attribute into a 16-bit cell
+// ----------------------------------------------------------------
 pub fn vgaEntry(uc: u8, color: u8) u16 {
-    return @as(u16, uc) // lower 8 bits = ASCII character
-    | (@as(u16, color) << 8); // upper 8 bits = color attribute
+    // Low byte = character, High byte = color attribute
+    return @as(u16, uc) | (@as(u16, color) << 8);
 }
 
-// Dimensions of the VGA text buffer
+// ----------------------------------------------------------------
+// VGA text buffer dimensions
+// ----------------------------------------------------------------
 pub const VGA_WIDTH: comptime_int = 80;
 pub const VGA_HEIGHT: comptime_int = 25;
 
+// ----------------------------------------------------------------
 // VGA text-mode driver state and methods
+// ----------------------------------------------------------------
 pub const VGA = struct {
-    row: usize, // current cursor row
-    column: usize, // current cursor column
-    color: u8, // current text color attribute
-    buffer: [*]volatile u16, // pointer to VGA text buffer in memory
+    row: usize, // Current cursor row (0-based)
+    column: usize, // Current cursor column (0-based)
+    color: u8, // Current VGA color attribute byte
+    buffer: [*]volatile u16, // Pointer to VGA text buffer at 0xB8000
 
-    // Initialize a VGA instance pointing at physical 0xB8000
+    /// Initialize a VGA driver instance pointing to 0xB8000
     pub fn init() VGA {
         const phys_addr = 0xB8000;
         const buffer_ptr = @as([*]volatile u16, @ptrFromInt(phys_addr));
@@ -55,18 +65,18 @@ pub const VGA = struct {
         };
     }
 
-    // Write a character at (x, y) with the current color
+    /// Write a character `char` at position (x, y) using `self.color`
     pub fn putEntryAt(self: *VGA, char: u8, x: usize, y: usize) void {
-        const index = y * VGA_WIDTH + x;
-        self.buffer[index] = vgaEntry(char, self.color);
+        const idx = y * VGA_WIDTH + x;
+        self.buffer[idx] = vgaEntry(char, self.color);
     }
 
-    // Change the current text color
+    /// Change the current drawing color
     pub fn setColor(self: *VGA, fg: Color, bg: Color) void {
         self.color = vgaEntryColor(fg, bg);
     }
 
-    // Write a single character at the cursor, handling newlines and wrapping
+    /// Write a character at the cursor, handle newline and wrapping
     pub fn putChar(self: *VGA, char: u8) void {
         if (char == '\n') {
             self.newLine();
@@ -74,10 +84,12 @@ pub const VGA = struct {
         }
         self.putEntryAt(char, self.column, self.row);
         self.column += 1;
-        if (self.column >= VGA_WIDTH) self.newLine();
+        if (self.column >= VGA_WIDTH) {
+            self.newLine();
+        }
     }
 
-    // Advance to the next line, scrolling if at bottom of screen
+    /// Move cursor to the next line, scrolling if at the bottom
     pub fn newLine(self: *VGA) void {
         self.column = 0;
         self.row += 1;
@@ -87,14 +99,14 @@ pub const VGA = struct {
         }
     }
 
-    // Scroll the buffer up by one line and clear the last line
+    /// Scroll the text buffer up by one line and clear the last row
     pub fn scroll(self: *VGA) void {
-        // Move each line up
+        // Shift each line up by copying cells
         for (1..VGA_HEIGHT) |y| {
             for (0..VGA_WIDTH) |x| {
-                const src_idx = y * VGA_WIDTH + x;
-                const dst_idx = (y - 1) * VGA_WIDTH + x;
-                self.buffer[dst_idx] = self.buffer[src_idx];
+                const src = y * VGA_WIDTH + x;
+                const dst = (y - 1) * VGA_WIDTH + x;
+                self.buffer[dst] = self.buffer[src];
             }
         }
         // Clear the bottom line
@@ -104,7 +116,7 @@ pub const VGA = struct {
         }
     }
 
-    // Clear the entire screen and reset cursor to top-left
+    /// Clear the entire screen and reset cursor to (0,0)
     pub fn clear(self: *VGA) void {
         for (0..VGA_HEIGHT) |y| {
             for (0..VGA_WIDTH) |x| {
@@ -115,46 +127,49 @@ pub const VGA = struct {
         self.column = 0;
     }
 
-    // Write a slice of bytes (string) to the screen
+    /// Write a slice of bytes to the screen
     pub fn writeString(self: *VGA, data: []const u8) void {
-        for (data) |char| {
-            self.putChar(char);
+        for (data) |c| {
+            self.putChar(c);
         }
     }
 
-    // Fill the whole screen with a given character and colors
+    /// Fill the entire screen with a single character and colors
     pub fn fillScreen(self: *VGA, char: u8, fg: Color, bg: Color) void {
-        const col_attr = vgaEntryColor(fg, bg);
+        const attr = vgaEntryColor(fg, bg);
         for (0..VGA_HEIGHT) |y| {
             for (0..VGA_WIDTH) |x| {
                 const idx = y * VGA_WIDTH + x;
-                self.buffer[idx] = vgaEntry(char, col_attr);
+                self.buffer[idx] = vgaEntry(char, attr);
             }
         }
-        // Reset cursor and current color
         self.row = 0;
         self.column = 0;
-        self.color = col_attr;
+        self.color = attr;
     }
 };
 
-// Global VGA instance
+// ----------------------------------------------------------------
+// Global VGA instance and public API wrappers
+// ----------------------------------------------------------------
 var vga = VGA.init();
 
-// Public wrappers around the VGA instance methods
-
+// Clear the screen
 pub fn clear() void {
     vga.clear();
 }
 
+// Fill screen with `char` in specified colors
 pub fn fillScreen(char: u8, fg: Color, bg: Color) void {
     vga.fillScreen(char, fg, bg);
 }
 
+// Write a string to VGA
 pub fn write(data: []const u8) void {
     vga.writeString(data);
 }
 
+// Set the text color
 pub fn setColor(fg: Color, bg: Color) void {
     vga.setColor(fg, bg);
 }
