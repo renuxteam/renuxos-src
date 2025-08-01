@@ -7,3 +7,10 @@ edition = "2024"
 crate-type = ["staticlib"]
 
 [dependencies]
+
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
