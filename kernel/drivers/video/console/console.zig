@@ -1,12 +1,10 @@
-const fmt: type = @import("std").fmt;
-const vga: type = @import("../vga/vga.zig");
+const vga: type = @import("vga");
+const VGA = vga.VGA;
+const cursor: usize = 0;
 
-pub fn print(comptime format: []const u8, args: anytype) void {
-    var buffer: [512]u8 = undefined;
-
-    const len = fmt.format(&buffer, format, args) catch return;
-
-    var i: usize = 0;
-
-    while (i < len) : (i += 1) {}
+pub fn backspace() void {
+    if (cursor > 0) {
+        cursor -= 1;
+        VGA[cursor] = 0x0720;
+    }
 }

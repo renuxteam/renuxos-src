@@ -1,39 +1,52 @@
-const std: type = @import("std"); // Import Zig’s standard library for future utilities
-const logo: type = @import("common/logo.zig"); // Module that renders the boot logo
-const vga: type = @import("drivers/video/vga/vga.zig"); // VGA text‐mode driver for output
-const cpu: type = @import("arch/x86/cpuid.zig"); // CPUID wrapper to query CPU info
-
-// Create a simple `print` alias pointing to the VGA write function
-const print: fn ([]const u8) void = vga.write;
+const lib: type = @import("lib"); // Import the global lib hub
+const logo: type = lib.common.logo; // Alias to the boot logo module
+const color: type = lib.drivers.video.vga.Color; // VGA color enum
+const shell = @import("shell/shell.zig");
+const set_color: fn (color, color) void = lib.drivers.video.vga.setColor;
+// Function to set foreground & background
+const print: fn ([]const u8) void = lib.drivers.video.vga.write;
+// Function to write a byte slice to screen
+const cpu: type = lib.arch; // Alias to architecture-specific code
 
 // ----------------------------------------------------------------
 // Kernel Entry Point
 // ----------------------------------------------------------------
-// This function is exported as the symbol `_start` by the linker.
-// It draws the ASCII art logo, prints greetings, displays CPU data,
-// and then spins in an idle loop to keep the kernel alive.
+// `kernel_main` is the symbol that GRUB (multiboot2) will jump to.
+// It prints the logo, a greeting, CPU info, and then enters idle.
 export fn kernel_main() void {
-    logo.print_logo(); // Draw the boot logo
-    print("\n"); // Newline after logo
+    // 1) Change text color to Green on Black background
+    set_color(color.Green, color.Black);
 
-    print("Hello World!"); // Print greeting
-    print("\n"); // Newline after greeting
-    print("CPU Vendor: "); // Print CPU vendor
-    print(cpu.get_cpu()); // Print the 12‐byte CPU vendor string
-    print("\n"); // Newline between vendor and brand
-    print("CPU: "); // Print CPU
-    print(cpu.get_cpu_name()); // Print the 48‐byte CPU brand string
+    // 2) Draw the ASCII art boot logo
+    print(logo.logo_ascii);
 
-    loop(); // Enter idle HLT loop
+    // 3) Move to next line after logo
+    print("\n");
+
+    // 4) Print a welcome message
+    print("Hello World!");
+    print("\n");
+
+    // 5) Show CPU vendor string
+    print("CPU Vendor: ");
+    print(cpu.get_cpu()); // 12-char vendor ID, e.g. "GenuineIntel"
+    print("\n");
+
+    // 6) Show CPU brand/name string
+    print("CPU: ");
+    print(cpu.get_cpu_name()); // 48-char brand, e.g. "Intel(R) Core(TM) i7..."
+    print("\n");
+    // 7) Hand off to idle loop (HTL) — kernel never returns
+    loop();
 }
 
 // ----------------------------------------------------------------
 // Idle HLT Loop
 // ----------------------------------------------------------------
-// Halts the CPU until the next external interrupt, then repeats.
-// This reduces power usage and prevents the kernel from “running off.”
+// This loop halts the CPU until the next interrupt, saving power
+// and preventing the kernel from busy-waiting.
 fn loop() void {
     while (true) {
-        asm volatile ("hlt"); // Issue HLT instruction in-line
+        asm volatile ("hlt"); // Inline assembly: execute HLT instruction
     }
 }

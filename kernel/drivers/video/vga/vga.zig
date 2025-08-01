@@ -1,9 +1,9 @@
-const std = @import("std"); // Import Zig’s standard library (reserved for future use)
+const std: type = @import("std"); // Import Zig’s standard library (reserved for future use)
 
 // ----------------------------------------------------------------
 // VGA text-mode color definitions
 // ----------------------------------------------------------------
-pub const Color = enum(u4) {
+pub const Color: type = enum(u4) {
     Black = 0,
     Blue = 1,
     Green = 2,
@@ -47,7 +47,7 @@ pub const VGA_HEIGHT: comptime_int = 25;
 // ----------------------------------------------------------------
 // VGA text-mode driver state and methods
 // ----------------------------------------------------------------
-pub const VGA = struct {
+pub const VGA: type = struct {
     row: usize, // Current cursor row (0-based)
     column: usize, // Current cursor column (0-based)
     color: u8, // Current VGA color attribute byte
@@ -55,8 +55,8 @@ pub const VGA = struct {
 
     /// Initialize a VGA driver instance pointing to 0xB8000
     pub fn init() VGA {
-        const phys_addr = 0xB8000;
-        const buffer_ptr = @as([*]volatile u16, @ptrFromInt(phys_addr));
+        const phys_addr: comptime_int = 0xB8000;
+        const buffer_ptr: [*]volatile u16 = @as([*]volatile u16, @ptrFromInt(phys_addr));
         return VGA{
             .row = 0,
             .column = 0,
@@ -152,7 +152,7 @@ pub const VGA = struct {
 // ----------------------------------------------------------------
 // Global VGA instance and public API wrappers
 // ----------------------------------------------------------------
-var vga = VGA.init();
+var vga: VGA = VGA.init();
 
 // Clear the screen
 pub fn clear() void {
@@ -172,4 +172,9 @@ pub fn write(data: []const u8) void {
 // Set the text color
 pub fn setColor(fg: Color, bg: Color) void {
     vga.setColor(fg, bg);
+}
+
+// Write a char to VGA
+pub fn write_char(char: u8) void {
+    vga.putChar(char);
 }
