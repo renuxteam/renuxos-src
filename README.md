@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/76c10ee3-4e14-441b-8215-2e39b06dc3eb" alt="RenuxOS Hello World">
+  <img src="https://github.com/user-attachments/assets/1b23b381-25dd-452a-8042-c23a5e259003" alt="RenuxOS Hello World">
 </p>
 
 ## 🌀 A New Era for RenuxOS
