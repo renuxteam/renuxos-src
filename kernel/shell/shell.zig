@@ -1,3 +1,4 @@
+const std: type = @import("std");
 const lib: type = @import("lib");
 const vga: type = lib.drivers.video.vga;
 const keyboard: type = lib.drivers.input.keyboard;
@@ -8,15 +9,10 @@ const print_char: fn (u8) void = vga.write_char;
 
 pub fn run() void {
     print("RenuxShell v0.1\n");
+    var input: [128]u8 = undefined;
+    @memset(&input, 0);
 
-    while (true) {
-        print("> ");
-        var input: [128]u8 = undefined;
-        const len = read_line(&input);
-        if (len > 0) {
-            commands.exec(input[0..len]);
-        }
-    }
+    print("> ");
 }
 
 fn read_line(buf: *[128]u8) usize {
@@ -24,9 +20,8 @@ fn read_line(buf: *[128]u8) usize {
 
     while (true) {
         const key: u8 = keyboard.get_key();
-        if (key == 0) {
-            continue;
-        }
+        if (key == 0) continue;
+
         switch (key) {
             '\n' => {
                 print_char('\n');
@@ -35,10 +30,12 @@ fn read_line(buf: *[128]u8) usize {
             8 => { // Backspace
                 if (index > 0) {
                     index -= 1;
+                    // Optionally print backspace handling visuals
+                    print_char(8);
                 }
             },
             else => {
-                if (index < buf.len) {
+                if (index < buf.len - 1) { // keep space for null terminator
                     buf[index] = key;
                     print_char(key);
                     index += 1;
@@ -46,5 +43,6 @@ fn read_line(buf: *[128]u8) usize {
             },
         }
     }
+
     return index;
 }

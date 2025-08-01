@@ -36,6 +36,7 @@ export fn kernel_main() void {
     print("CPU: ");
     print(cpu.get_cpu_name()); // 48-char brand, e.g. "Intel(R) Core(TM) i7..."
     print("\n");
+    shell.run();
     // 7) Hand off to idle loop (HTL) — kernel never returns
     loop();
 }
