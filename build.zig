@@ -128,6 +128,23 @@ pub fn build(b: *std.Build) void {
     kernelExe.root_module.pic = false;
     kernelExe.want_lto = false;
 
+    const cargo_step = b.addSystemCommand(
+        &.{
+            "cargo",
+            "build",
+            "--release",
+            "--manifest-path",
+            "microkernel/Cargo.toml",
+            "--target",
+            "microkernel/src/arch/i386/i386-unknown-none.json",
+            "-Z",
+            "build-std=core,compiler_builtins",
+        },
+    );
+
+    kernelExe.step.dependOn(&cargo_step.step);
+    kernelExe.addObjectFile(b.path("microkernel/target/i386-unknown-none/release/libmicrokernel.a"));
+
     // ----------------------------------------------------------------
     // 10) Combine all object files into the final kernel image
     // ----------------------------------------------------------------
