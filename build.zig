@@ -2,31 +2,31 @@ const std: type = @import("std");
 
 pub fn build(b: *std.Build) void {
     // ----------------------------------------------------------------
-    // Paths to source files and linker script
+    // 1) Define paths to critical source and ASM files
     // ----------------------------------------------------------------
-    const kernelMainPath = b.path("kernel/main.zig");
-    const multibootAsmPath = b.path("kernel/arch/i386/multiboot_header.S");
-    const inputAsmPath = b.path("kernel/arch/i386/input.S");
-    const linkerScript = b.path("linker/linker.ld");
-    const cpuInfoAsmPath = b.path("kernel/arch/i386/cpuid.S");
-    const startAsmPath = b.path("kernel/arch/i386/start.S");
-    const libPath = b.path("kernel/lib.zig");
+    const kernelMainPath = b.path("kernel/main.zig"); // Primary Zig entry point
+    const multibootAsmPath = b.path("kernel/arch/i386/multiboot_header.S"); // Multiboot2 header assembly
+    const inputAsmPath = b.path("kernel/arch/i386/input.S"); // PS/2 keyboard I/O assembly
+    const cpuInfoAsmPath = b.path("kernel/arch/i386/cpuid.S"); // CPUID detection assembly
+    const startAsmPath = b.path("kernel/arch/i386/start.S"); // Entry stub assembly
+    const linkerScript = b.path("linker/linker.ld"); // Custom linker script
+    const libPath = b.path("kernel/lib.zig"); // Global library hub
 
     // ----------------------------------------------------------------
-    // Target configuration: 32-bit x86, freestanding (bare-metal)
+    // 2) Configure target: 32-bit x86 freestanding (bare-metal)
     // ----------------------------------------------------------------
     const target = b.standardTargetOptions(
         .{
             .default_target = .{
-                .cpu_arch = .x86,
-                .os_tag = .freestanding,
-                .abi = .none,
+                .cpu_arch = .x86, // Intel x86 architecture
+                .os_tag = .freestanding, // No underlying OS
+                .abi = .none, // No ABI conventions
             },
         },
     );
 
     // ----------------------------------------------------------------
-    // Optimization level: ReleaseSmall by default
+    // 3) Select optimization level (optimize for size)
     // ----------------------------------------------------------------
     const optimize = b.standardOptimizeOption(
         .{
@@ -35,22 +35,20 @@ pub fn build(b: *std.Build) void {
     );
 
     // ----------------------------------------------------------------
-    // Assemble multiboot header and entry stub
+    // 4) Assemble the Multiboot header into an object
     // ----------------------------------------------------------------
     const bootObj = b.addObject(
         .{
             .name = "boot",
-            .root_module = b.createModule(
-                .{
-                    .target = target,
-                    .optimize = optimize,
-                },
-            ),
+            .root_module = b.createModule(.{ .target = target, .optimize = optimize }),
         },
     );
-    bootObj.addAssemblyFile(multibootAsmPath);
+    bootObj.addAssemblyFile(multibootAsmPath); // Embed Multiboot2 header
 
-    const lib = b.createModule(
+    // ----------------------------------------------------------------
+    // 5) Create global `lib` module for shared imports
+    // ----------------------------------------------------------------
+    const libMod = b.createModule(
         .{
             .root_source_file = libPath,
             .target = target,
@@ -59,7 +57,7 @@ pub fn build(b: *std.Build) void {
     );
 
     // ----------------------------------------------------------------
-    // Compile kernel main as the entry point
+    // 6) Compile the main Zig kernel entry point
     // ----------------------------------------------------------------
     const mainObj = b.addObject(
         .{
@@ -74,12 +72,12 @@ pub fn build(b: *std.Build) void {
             ),
         },
     );
-    mainObj.root_module.addImport("lib", lib);
-    mainObj.root_module.pic = false;
+    mainObj.root_module.addImport("lib", libMod); // Inject shared `lib`
+    mainObj.root_module.pic = false; // Disable PIC
 
     // ----------------------------------------------------------------
-    // Create and import the kernel main module
-    // ---------------------------------------------------------------
+    // 7) Import the kernel_main symbol for linkage
+    // ----------------------------------------------------------------
     const kernelMainMod = b.createModule(
         .{
             .root_source_file = kernelMainPath,
@@ -88,12 +86,11 @@ pub fn build(b: *std.Build) void {
             .red_zone = false,
         },
     );
-
-    kernelMainMod.addImport("lib", lib);
+    kernelMainMod.addImport("lib", libMod);
     mainObj.root_module.addImport("kernel_main", kernelMainMod);
 
     // ----------------------------------------------------------------
-    // Add start-up assembly
+    // 8) Assemble additional low-level stubs (input, cpuid, start)
     // ----------------------------------------------------------------
     const asmObj = b.addObject(
         .{
@@ -107,15 +104,14 @@ pub fn build(b: *std.Build) void {
             ),
         },
     );
-    asmObj.addAssemblyFile(multibootAsmPath);
-    asmObj.addAssemblyFile(inputAsmPath);
-    asmObj.addAssemblyFile(cpuInfoAsmPath);
-    asmObj.addAssemblyFile(startAsmPath);
+    asmObj.addAssemblyFile(inputAsmPath); // Keyboard I/O
+    asmObj.addAssemblyFile(cpuInfoAsmPath); // CPUID info
+    asmObj.addAssemblyFile(startAsmPath); // Entry stub
 
     // ----------------------------------------------------------------
-    // Link final ELF executable with custom linker script
+    // 9) Link final ELF using the custom script
     // ----------------------------------------------------------------
-    const kernel = b.addExecutable(
+    const kernelExe = b.addExecutable(
         .{
             .name = "kernel.elf",
             .root_module = b.createModule(
@@ -127,22 +123,20 @@ pub fn build(b: *std.Build) void {
             ),
         },
     );
-    kernel.setLinkerScript(linkerScript);
-    kernel.root_module.red_zone = false;
-    kernel.root_module.pic = false;
-    kernel.want_lto = false;
+    kernelExe.setLinkerScript(linkerScript);
+    kernelExe.root_module.red_zone = false;
+    kernelExe.root_module.pic = false;
+    kernelExe.want_lto = false;
 
     // ----------------------------------------------------------------
-    // Combine objects into the final ELF
+    // 10) Combine all object files into the final kernel image
     // ----------------------------------------------------------------
-    kernel.addObject(mainObj);
-    kernel.addObject(asmObj);
-    // ----------------------------------------------------------------
-    // Install the kernel ELF as a build artifact
-    // ----------------------------------------------------------------
-    b.installArtifact(kernel);
-}
+    kernelExe.addObject(bootObj); // Multiboot header
+    kernelExe.addObject(mainObj); // Main kernel logic
+    kernelExe.addObject(asmObj); // Assembly stubs
 
-fn withlib(step: anytype, lib: *std.Build.Module) void {
-    step.root_module.addImport("lib", lib);
+    // ----------------------------------------------------------------
+    // 11) Install the final kernel ELF
+    // ----------------------------------------------------------------
+    b.installArtifact(kernelExe);
 }
