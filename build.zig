@@ -5,11 +5,11 @@ pub fn build(b: *std.Build) void {
     // Paths to source files and linker script
     // ----------------------------------------------------------------
     const kernelMainPath = b.path("kernel/main.zig");
-    const multibootAsmPath = b.path("kernel/arch/x86/multiboot_header.S");
-    const inputAsmPath = b.path("kernel/arch/x86/input.S");
+    const multibootAsmPath = b.path("kernel/arch/i386/multiboot_header.S");
+    const inputAsmPath = b.path("kernel/arch/i386/input.S");
     const linkerScript = b.path("linker/linker.ld");
-    const cpuInfoAsmPath = b.path("kernel/arch/x86/cpuid.S");
-    const startAsmPath = b.path("kernel/arch/x86/start.S");
+    const cpuInfoAsmPath = b.path("kernel/arch/i386/cpuid.S");
+    const startAsmPath = b.path("kernel/arch/i386/start.S");
     const libPath = b.path("kernel/lib.zig");
 
     // ----------------------------------------------------------------
