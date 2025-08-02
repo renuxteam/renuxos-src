@@ -33,7 +33,7 @@ This is the true beginning of a system built on the pillars of **clarity, modula
 
 **RenuxOS** is an operating system crafted by a neurodivergent mind, for enthusiasts and hackers, with the following goals:
 
--  [ ] 🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel. (*future microkernel in rust*)
+-  [x] *partial* 🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel.
 -  [x] 🧩 **Extreme Modularity:** Allowing every component of the system to be easily replaced or customized.
 - [x] 🛠️ **Built with the Right Tools:** Written primarily in **Zig**, with parts in **C** and **Assembly** where needed, for maximum control and simplicity.
 -  [x] 🗂️ **Monorepo:** The entire source code lives in a single repository (`renuxos-src`) to simplify building, development, and collaboration.
