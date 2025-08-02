@@ -23,6 +23,7 @@ clean:
 	rm -rf .zig-cache
 	rm -rf zig-out
 	rm -f iso/boot/kernel.elf
+	rm -rf microkernel/target
 
 # Display help for available targets
 help:

@@ -5,6 +5,7 @@ pub fn build(b: *std.Build) void {
     // 1) Define paths to critical source and ASM files
     // ----------------------------------------------------------------
     const kernelMainPath = b.path("kernel/main.zig"); // Primary Zig entry point
+    const microKernelPath = b.path("microkernel/target/i386-unknown-none/release/libmicrokernel.a");
     const multibootAsmPath = b.path("kernel/arch/i386/multiboot_header.S"); // Multiboot2 header assembly
     const inputAsmPath = b.path("kernel/arch/i386/input.S"); // PS/2 keyboard I/O assembly
     const cpuInfoAsmPath = b.path("kernel/arch/i386/cpuid.S"); // CPUID detection assembly
@@ -111,7 +112,7 @@ pub fn build(b: *std.Build) void {
     // ----------------------------------------------------------------
     // 9) Link final ELF using the custom script
     // ----------------------------------------------------------------
-    const kernelExe = b.addExecutable(
+    const kernel = b.addExecutable(
         .{
             .name = "kernel.elf",
             .root_module = b.createModule(
@@ -123,37 +124,27 @@ pub fn build(b: *std.Build) void {
             ),
         },
     );
-    kernelExe.setLinkerScript(linkerScript);
-    kernelExe.root_module.red_zone = false;
-    kernelExe.root_module.pic = false;
-    kernelExe.want_lto = false;
+    kernel.setLinkerScript(linkerScript);
+    kernel.root_module.red_zone = false;
+    kernel.root_module.pic = false;
+    kernel.want_lto = false;
 
     const cargo_step = b.addSystemCommand(
-        &.{
-            "cargo",
-            "build",
-            "--release",
-            "--manifest-path",
-            "microkernel/Cargo.toml",
-            "--target",
-            "microkernel/src/arch/i386/i386-unknown-none.json",
-            "-Z",
-            "build-std=core,compiler_builtins",
-        },
+        &.{"./tools/build_microkernel.sh"},
     );
 
-    kernelExe.step.dependOn(&cargo_step.step);
-    kernelExe.addObjectFile(b.path("microkernel/target/i386-unknown-none/release/libmicrokernel.a"));
+    kernel.step.dependOn(&cargo_step.step);
+    kernel.addObjectFile(microKernelPath);
 
     // ----------------------------------------------------------------
     // 10) Combine all object files into the final kernel image
     // ----------------------------------------------------------------
-    kernelExe.addObject(bootObj); // Multiboot header
-    kernelExe.addObject(mainObj); // Main kernel logic
-    kernelExe.addObject(asmObj); // Assembly stubs
+    kernel.addObject(bootObj); // Multiboot header
+    kernel.addObject(mainObj); // Main kernel logic
+    kernel.addObject(asmObj); // Assembly stubs
 
     // ----------------------------------------------------------------
     // 11) Install the final kernel ELF
     // ----------------------------------------------------------------
-    b.installArtifact(kernelExe);
+    b.installArtifact(kernel);
 }
