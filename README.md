@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig.</strong>
+  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig And Rust.</strong>
 </p>
 
 <p align="center">
