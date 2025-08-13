@@ -1,0 +1,26 @@
+name: Mirror to Codeberg
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.CODEBERG_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan codeberg.org >> ~/.ssh/known_hosts
+
+      - name: Push to Codeberg
+        run: |
+          git remote add codeberg ssh://git@codeberg.org/renuxteam/renuxos-src.git
+          git push --mirror codeberg
