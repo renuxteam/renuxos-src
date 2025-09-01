@@ -2,8 +2,9 @@
 
 # Variables
 ISO_DIR="iso"
-KERNEL="zig-out/bin/kernel.elf"
 OUT_ISO="renuxos.iso"
+
+KERNEL="build/renuxos.elf"
 
 # Copy kernel to ISO directory
 cp "$KERNEL" "$ISO_DIR/boot/"

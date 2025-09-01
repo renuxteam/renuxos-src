@@ -2,33 +2,21 @@ ENTRY(_start)
 
 SECTIONS
 {
+    . = 0x00100000;   
 
-    .multiboot_header ALIGN(8) : {
+    .multiboot_header : {
         KEEP(*(.multiboot_header))
     }
 
-
-    
-    .text ALIGN(4K) : {
+    .text : {
+        *(.text._start)
         *(.text*)
     }
 
-    
-    .rodata : {
-        *(.rodata*)
-    }
+    .rodata : { *(.rodata*) }
+    .data   : { *(.data*) }
+    .bss    : { *(.bss*) }
 
-    
-    .data : {
-        *(.data*)
-    }
-
-    
-    .bss : {
-        *(.bss*)
-    }
-
-    
     /DISCARD/ : {
         *(.eh_frame)
         *(.eh_frame_hdr)
