@@ -3,15 +3,15 @@
 </p>
 
 <p align="center">
-  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig And Rust.</strong>
+  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch in modern C++.</strong>
 </p>
 
 <p align="center">
-  <img alt="Main Language" src="https://img.shields.io/badge/language-Zig-orange.svg?style=for-the-badge">
-  <img alt="Project Status" src="https://img.shields.io/badge/status-In%20Development-blue.svg?style=for-the-badge">
+  <img alt="Main Language" src="https://img.shields.io/badge/language-C++23-blue.svg?style=for-the-badge">
+  <img alt="Project Status" src="https://img.shields.io/badge/status-In%20Development-yellow.svg?style=for-the-badge">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge">
   <a href="https://github.com/renuxteam/renuxos-src_old">
-    <img alt="Legacy Prototype" src="https://img.shields.io/badge/legacy-Rust%20(Archived)-gray.svg?style=for-the-badge">
+    <img alt="Legacy Prototype" src="https://img.shields.io/badge/legacy-Zig%20%26%20Rust-gray.svg?style=for-the-badge">
   </a>
 </p>
 
@@ -23,53 +23,52 @@
 
 Hi, I'm **Renan Lucas**, the creator of RenuxOS.
 
-After a long prototyping and exploration phase with **Rust**, I decided to take RenuxOS in a **lighter, sharper, and more personal direction**. This marked the beginning of a complete rewrite of the kernel (and the first real release!) in [**Zig**](https://ziglang.org/).
+After experimenting with **Rust** and **Zig**, I decided to take RenuxOS in a **simpler, more predictable, and C++-centric direction**. This marks the official migration to **modern C++23**, giving us:
 
-This is the true beginning of a system built on the pillars of **clarity, modularity, and hacker-level control** — starting with our first official version: **Aurora**.
+- Full **type safety** and **object-oriented structure** for the kernel and drivers.  
+- Better **documentation** and **community resources**.  
+- Easier **integration** with low-level hardware and boot code.  
+
+This is the new era of RenuxOS — **clarity, modularity, and hacker-level control** — starting with our first C++ release.
 
 ---
 
 ## 🎯 Core Principles
 
-**RenuxOS** is an operating system crafted by a neurodivergent mind, for enthusiasts and hackers, with the following goals:
+**RenuxOS** is an operating system crafted by a neurodivergent mind, for enthusiasts and hackers:
 
--  [x] *partial* 🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel.
--  [x] 🧩 **Extreme Modularity:** Allowing every component of the system to be easily replaced or customized.
-- [x] 🛠️ **Built with the Right Tools:** Written primarily in **Zig**, with parts in **C** and **Assembly** where needed, for maximum control and simplicity.
--  [x] 🗂️ **Monorepo:** The entire source code lives in a single repository (`renuxos-src`) to simplify building, development, and collaboration.
+- 🧠 **Hybrid Kernel Concept:** Microkernel modularity with monolithic performance.  
+- 🧩 **Extreme Modularity:** Components can be replaced or extended easily.  
+- 🛠️ **C++ Modernity:** Written entirely in **C++23** with Assembly where necessary.  
+- 🗂️ **Monorepo:** All code lives in a single repository (`renuxos-src`) for simplicity.  
 
-### Why Zig?
+### Why C++ Modern?
 
-While Rust is a fantastic language, it proved to be overly complex and heavy for my creative workflow. As someone with **AuDHD (Autism + ADHD)**, the simplicity and predictability of Zig align perfectly with how I think and code.
+While Zig and Rust were awesome for prototyping, **C++23** gives:
 
-> **Zig just fits my brain better.**
-> And that's exactly what RenuxOS needs to thrive.
+- 🧘‍♂️ **Control & Predictability:** Direct memory access, no hidden behavior.  
+- 💡 **Object-Oriented Clarity:** Classes and structures make drivers and kernel modular.  
+- 🔩 **Low-Level Integration:** Works smoothly with Assembly and low-level hardware.  
+- 📦 **Community & Docs:** Massive ecosystem and references for OS dev.  
 
--   🧘‍♂️ **Less Noise:** Direct and straightforward compiler errors without unnecessary complexity.
--   💡 **Clean Mental Model:** The language's clarity makes development more intuitive.
--   🔩 **Natural Integration:** Seamless interoperability with **C** and **Assembly**.
--   📦 **Integrated Build System:** No more external build systems. Just `zig build`, and you're done.
+> **C++23 is the future for RenuxOS.**  
+> It’s simpler to maintain, extend, and teach.
 
 ---
 
 ## ✨ Features (Roadmap)
 
 | Version      | Codename    | Status           | Main Focus                                           |
-|--------------|-------------|------------------|------------------------------------------------------|
-| *Prototype*  | *(none)*    | ❌ **Abandoned**  | Initial proof-of-concept in Rust.                    |
-| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Basic Zig kernel, boot, TTY, and modular structure.  |
-| *Future*     | 🐆 **Jaguar** | 🔮 **Planned**   | Memory management, drivers, and multitasking.        |
-
-The old Rust-based prototype is still available for reference in the archive:  
-👉 **[renuxos-src_old (prototype)](https://github.com/renuxteam/renuxos-src_old)**
+|--------------|-------------|-----------------|------------------------------------------------------|
+| *Prototype*  | *(none)*    | ❌ **Abandoned**  | Rust & Zig kernel prototypes.                        |
+| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Full C++23 kernel, VGA driver, modular structure.    |
+| *Future*     | 🐆 **Jaguar** | 🔮 **Planned**   | Memory management, multitasking, more drivers.       |
 
 ---
 
 ## 🚀 Getting Started
 
-Ready to compile and run the kernel? All the detailed instructions, including prerequisites and platform-specific steps, are available on our official project wiki.
-
-The wiki is the single source of truth for building and testing RenuxOS.
+Compile and run the kernel with the updated C++ build system. Detailed instructions, prerequisites, and platform-specific steps are in the wiki.
 
 ➡️ **[View the Build Guide on the Wiki](https://github.com/renuxteam/renuxos-src/wiki/Bulld-Project)**
 
@@ -77,27 +76,22 @@ The wiki is the single source of truth for building and testing RenuxOS.
 
 ## 🤝 How to Contribute
 
-This project is a personal journey, but it's also an open door for the community.
+RenuxOS is a personal journey but open to community contributions.
 
-> I'm not just building an OS; I'm building a vision for hacker freedom, architectural clarity, and accessibility in complexity.
+> Join us if you are neurodivergent, curious about OS dev, or love ambitious projects.
 
-Whether you're neurodivergent, low-level curious, or just love weird and ambitious projects — **welcome to the RenuxOS journey**.
-
-**Ways you can help:**
-*   ⭐ Star the project to show your support.
-*   🐞 Open an *Issue* to report bugs or suggest ideas.
-*   🛠️ Submit a *Pull Request* with improvements or fixes.
-*   🗣️ Join the discussions and share the project!
-
-Stay tuned for dev logs, demos, and upcoming documentation.
+**Ways to help:**
+* ⭐ Star the project.
+* 🐞 Open issues for bugs or suggestions.
+* 🛠️ Submit Pull Requests.
+* 🗣️ Join discussions and share ideas.
 
 ---
 
-🛠️ Built with `zig build` and a lot of love,  
+🛠️ Built with `c++23` + Assembly,  
 — Renan Lucas
 
 ---
-
 
 ## Star History
 
