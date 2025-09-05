@@ -12,7 +12,7 @@ configure_file(
 )
 
 kernel_src = files(
-    'kernel/kmain.cpp',
+    'kernel/core/kmain.cpp',
     'kernel/arch/i386/multiboot_header.S',
     'kernel/arch/i386/boot.S',
     'kernel/drivers/video/vga/vga.cpp',
@@ -20,10 +20,10 @@ kernel_src = files(
 
 
 executable('renuxos.elf',kernel_src,
-cpp_args: [
-    '-ffreestanding','-fno-exceptions','-fno-rtti','-m32','-Os', '-no-pie', '-nostdlib'
-],
-link_args: [
-    '-m32', '-T','linker.ld','-nostdlib'
-]
+    cpp_args: [
+        '-ffreestanding','-fno-exceptions','-fno-rtti','-m32', '-nostdlib'
+    ],
+    link_args: [
+        '-m32', '-T','linker.ld','-nostdlib'
+    ]
 )

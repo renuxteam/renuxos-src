@@ -31,7 +31,8 @@ public:
     void clear();
     void setColor(Color fg, Color bg);
     void putChar(char c);
-    void write(const char* str);
+    void print(const char* str);
+    void println(const char* str);
     void fill(char c, Color fg, Color bg);
 
 private:

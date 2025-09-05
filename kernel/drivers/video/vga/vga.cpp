@@ -14,9 +14,11 @@ uint16_t VGA::vgaEntry(char c, uint8_t color) const {
 }
 
 void VGA::clear() {
-    for (int y = 0; y < HEIGHT; y++)
-        for (int x = 0; x < WIDTH; x++)
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             buffer[y * WIDTH + x] = vgaEntry(' ', color);
+        }
+    }   
     row = column = 0;
 }
 
@@ -39,27 +41,38 @@ void VGA::putChar(char c) {
 
     if (row >= HEIGHT) {
         // Scroll
-        for (int y = 1; y < HEIGHT; y++)
-            for (int x = 0; x < WIDTH; x++)
+        for (int y = 1; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
                 buffer[(y - 1) * WIDTH + x] = buffer[y * WIDTH + x];
-
-        for (int x = 0; x < WIDTH; x++)
+            }
+        }
+        for (int x = 0; x < WIDTH; x++) {
             buffer[(HEIGHT - 1) * WIDTH + x] = vgaEntry(' ', color);
-
+        }
         row = HEIGHT - 1;
     }
 }
 
-void VGA::write(const char* str) {
-    while (*str)
+void VGA::print(const char* str) {
+    while (*str) {
         putChar(*str++);
+    }
+}
+
+void VGA::println(const char* str) {
+    while (*str) {
+        putChar(*str++);
+    }
+    putChar('\n');
 }
 
 void VGA::fill(char c, Color fg, Color bg) {
     uint8_t col = static_cast<uint8_t>(fg) | (static_cast<uint8_t>(bg) << 4);
-    for (int y = 0; y < HEIGHT; y++)
-        for (int x = 0; x < WIDTH; x++)
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             buffer[y * WIDTH + x] = vgaEntry(c, col);
+        }
+    }
     row = column = 0;
     color = col;
 }
