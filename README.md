@@ -15,10 +15,6 @@
   </a>
 </p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/1b23b381-25dd-452a-8042-c23a5e259003" alt="RenuxOS Hello World">
-</p>
-
 ## 🌀 A New Era for RenuxOS
 
 Hi, I'm **Renan Lucas**, the creator of RenuxOS.
