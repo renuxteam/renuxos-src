@@ -1,10 +1,15 @@
+CC ?= gcc
+
+
 build:
 	mkdir out;
 	cd kernel; \
 	zig build;  \
 	cd ..
 	cd out; \
-	ld -T ../linker/linker.ld kernel.o -o kernel.elf; \
+	${CC} -c ../kernel/drivers/video/framebuffer/framebuffer.c -I../kernel/drivers/video/framebuffer/include/ -o framebuffer.o; \
+	${CC} -c ../boot/x86_64/limine_request.c -o limine_request.o; \
+	ld -T ../linker/linker.ld kernel.o framebuffer.o limine_request.o -o kernel.elf; \
 	cd ..; \
 	mv out/kernel.elf .; \
 	rm -rf out;
@@ -25,11 +30,11 @@ iso: build
 	
 clean:
 	rm -rf kernel/.zig-cache
-	rm -rf out/kernel.o
-	rm -rf 
-	rm -rf kernel.elf
 	rm -rf /tmp/limine
 	rm -rf renuxos.iso
+	rm -rf /tmp/renuxos_iso
+	rm -rf kernel.elf
+	rm -rf out
 
 run: iso
 	qemu-system-x86_64 -cdrom renuxos.iso -smp 2 -cpu host --enable-kvm -vga virtio
