@@ -5,6 +5,11 @@
 <p align="center">
   <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig.</strong>
 </p>
+<p align="center">
+  <img width="1306" height="882" alt="Captura de tela em 2025-09-07 18-33-33" src="https://github.com/user-attachments/assets/354546c8-b722-41df-9478-ce365413b91b" />
+</p>
+
+
 
 <p align="center">
   <img alt="Main Language" src="https://img.shields.io/badge/language-Zig-orange.svg?style=for-the-badge">
