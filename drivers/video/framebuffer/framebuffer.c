@@ -3,25 +3,36 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// -----------------------------
-// Simple framebuffer implementation in C
-// - Assumes limine.h is available
-// - Assumes framebuffer format is 32bpp little-endian XRGB8888
-// - Provides minimal 8x8 bitmap font (subset). Expand as needed.
-// -----------------------------
+// -----------------------------------------------------------------------------
+// Simple framebuffer implementation in C for RenuxOS
+// 
+// This module provides basic framebuffer graphics functionality including:
+// - Framebuffer initialization using Limine boot protocol
+// - Pixel manipulation (drawing, clearing)
+// - Text rendering using a built-in 8x8 bitmap font
+// - String drawing capabilities
+//
+// Assumptions:
+// - Limine boot protocol is available (limine.h)
+// - Framebuffer format is 32bpp little-endian XRGB8888
+// - Minimal 8x8 bitmap font is provided (ASCII 32-127 subset)
+// -----------------------------------------------------------------------------
 
+// External declaration of Limine framebuffer request structure
 extern volatile struct limine_framebuffer_request framebuffer_request;
 
-// internal state
-static uint8_t* fb_addr = 0;
-static size_t fb_width = 0;
-static size_t fb_height = 0;
-static size_t fb_pitch = 0;
-static size_t fb_bpp = 0;
-static size_t fb_bytes_per_pixel = 0;
+// Internal framebuffer state variables
+static uint8_t* fb_addr = 0;          // Pointer to framebuffer memory
+static size_t fb_width = 0;           // Width of framebuffer in pixels
+static size_t fb_height = 0;          // Height of framebuffer in pixels
+static size_t fb_pitch = 0;           // Pitch (bytes per scanline)
+static size_t fb_bpp = 0;             // Bits per pixel
+static size_t fb_bytes_per_pixel = 0;  // Bytes per pixel (bpp / 8)
 
-// Simple 8x8 font for ASCII 32..127 (here we implement a tiny subset to be concise).
-// Each byte is one row, bit7 = leftmost pixel.
+// 8x8 bitmap font data for ASCII characters 32-127 (printable characters)
+// Each character is represented by 8 bytes (8 rows), where each byte represents
+// one horizontal row of pixels. Bit 7 (MSB) is the leftmost pixel.
+// This provides basic text rendering capability for the framebuffer.
 static const unsigned char font8x8_basic[96][8] = {
     // 32 ' ' (space)
     {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
@@ -217,71 +228,139 @@ static const unsigned char font8x8_basic[96][8] = {
     {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
 };
 
+/**
+ * Initialize the framebuffer using Limine boot protocol
+ * This function retrieves framebuffer information from the Limine bootloader
+ * and sets up internal state variables for framebuffer operations
+ */
 void fb_init(void) {
+    // Check if Limine provided a valid framebuffer response
     if (framebuffer_request.response == NULL) return;
     struct limine_framebuffer_response* resp = framebuffer_request.response;
+    
+    // Ensure at least one framebuffer is available
     if (resp->framebuffer_count < 1) return;
 
+    // Use the first available framebuffer
     struct limine_framebuffer* fb = resp->framebuffers[0];
-    fb_addr = (uint8_t*)(uintptr_t)fb->address;
-    fb_width = fb->width;
-    fb_height = fb->height;
-    fb_pitch = fb->pitch;
-    fb_bpp = fb->bpp;
-    fb_bytes_per_pixel = fb_bpp / 8;
+    fb_addr = (uint8_t*)(uintptr_t)fb->address;  // Framebuffer memory address
+    fb_width = fb->width;                        // Width in pixels
+    fb_height = fb->height;                      // Height in pixels
+    fb_pitch = fb->pitch;                        // Bytes per scanline
+    fb_bpp = fb->bpp;                            // Bits per pixel
+    fb_bytes_per_pixel = fb_bpp / 8;             // Bytes per pixel
 }
 
+/**
+ * Clear the entire framebuffer with a specified color
+ * @param color The color to fill the framebuffer with (0x00RRGGBB format)
+ * This function fills every pixel in the framebuffer with the given color
+ */
 void fb_clear(uint32_t color) {
-    if (!fb_addr) return;
+    if (!fb_addr) return;  // Ensure framebuffer is initialized
+    
     // color is 0x00RRGGBB, but framebuffer is little-endian 32-bit word
     uint32_t pixel = color;
+    
+    // Currently only supports 32bpp (4 bytes per pixel) format
     if (fb_bytes_per_pixel == 4) {
+        // Iterate through each row (scanline) of the framebuffer
         for (size_t y = 0; y < fb_height; ++y) {
-            uint8_t* row = fb_addr + y * fb_pitch;
-            uint32_t* px = (uint32_t*)row;
+            uint8_t* row = fb_addr + y * fb_pitch;  // Calculate row start address
+            uint32_t* px = (uint32_t*)row;          // Cast to 32-bit pointer for efficient writing
+            
+            // Fill entire row with the specified color
             for (size_t x = 0; x < fb_width; ++x) {
                 px[x] = pixel;
             }
         }
     } else {
+        // Other bit depths are not implemented
         // Not implemented: other bpp
     }
 }
 
+/**
+ * Internal function to draw a single pixel at specified coordinates
+ * This is a helper function used by other drawing functions
+ * @param x X coordinate (0 = leftmost pixel)
+ * @param y Y coordinate (0 = topmost pixel)
+ * @param color The color to draw (0x00RRGGBB format)
+ */
 static void fb_put_pixel_internal(size_t x, size_t y, uint32_t color) {
-    if (!fb_addr) return;
-    if (x >= fb_width || y >= fb_height) return;
+    if (!fb_addr) return;  // Ensure framebuffer is initialized
+    if (x >= fb_width || y >= fb_height) return;  // Check bounds
+    
+    // Currently only supports 32bpp (4 bytes per pixel) format
     if (fb_bytes_per_pixel == 4) {
+        // Calculate the memory address of the pixel
         uint8_t* p = fb_addr + y * fb_pitch + x * 4;
-        uint32_t* pw = (uint32_t*)p;
-        *pw = color;
+        uint32_t* pw = (uint32_t*)p;  // Cast to 32-bit pointer
+        *pw = color;                  // Write the color value
     }
 }
 
+/**
+ * Draw a single pixel at specified coordinates
+ * @param x X coordinate (0 = leftmost pixel)
+ * @param y Y coordinate (0 = topmost pixel)
+ * @param color The color to draw (0x00RRGGBB format)
+ * This is the public interface for pixel drawing
+ */
 void fb_put_pixel(size_t x, size_t y, uint32_t color) {
     fb_put_pixel_internal(x, y, color);
 }
 
+/**
+ * Draw a single character at specified coordinates using the built-in font
+ * @param x X coordinate of the top-left corner of the character
+ * @param y Y coordinate of the top-left corner of the character
+ * @param ch The character to draw (ASCII value)
+ * @param color The color to use for drawing the character (0x00RRGGBB format)
+ * Characters outside the printable ASCII range (32-127) are replaced with space
+ */
 void fb_draw_char(size_t x, size_t y, char ch, uint32_t color) {
+    // Replace non-printable characters with space
     if (ch < 32 || ch > 127) ch = ' ';
+    
+    // Get the font glyph for the character (offset by 32 since font starts at ASCII 32)
     const unsigned char* glyph = font8x8_basic[(int)ch - 32];
+    
+    // Iterate through each row of the 8x8 character
     for (size_t row = 0; row < 8; ++row) {
-        unsigned char bits = glyph[row];
+        unsigned char bits = glyph[row];  // Get the bit pattern for this row
+        
+        // Iterate through each column (pixel) in the row
         for (size_t col = 0; col < 8; ++col) {
+            // Check if the bit is set (pixel should be drawn)
             if (bits & (1 << (7 - col))) {
+                // Draw the pixel at the calculated position
                 fb_put_pixel_internal(x + col, y + row, color);
             }
         }
     }
 }
 
+/**
+ * Draw a string of text at specified coordinates
+ * @param x X coordinate of the starting position
+ * @param y Y coordinate of the starting position
+ * @param s The null-terminated string to draw
+ * Characters are drawn using the built-in 8x8 font with fixed width
+ * Currently uses white color (0x00FFFFFF) for all characters
+ */
 void fb_draw_string(size_t x, size_t y, const char* s) {
-    if (!s) return;
-    size_t cx = x;
-    size_t i = 0;
+    if (!s) return;  // Check for null pointer
+    
+    size_t cx = x;  // Current X position (moves as characters are drawn)
+    size_t i = 0;   // String index
+    
+    // Iterate through each character in the string until null terminator
     while (s[i] != '\0') {
+        // Draw the current character at current position with white color
         fb_draw_char(cx, y, s[i], 0x00FFFFFF); // white color for now
-        cx += 8;
-        ++i;
+        
+        cx += 8;  // Move to next character position (8 pixels per character width)
+        ++i;      // Move to next character in string
     }
 }

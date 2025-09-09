@@ -1,4 +1,4 @@
-const std: type = @import("std"); // Import Zig’s standard library (reserved for future use)
+const std: type = @import("std"); // Import Zig's standard library (reserved for future use)
 
 // ----------------------------------------------------------------
 // VGA text-mode color definitions

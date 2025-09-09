@@ -26,7 +26,7 @@ pub fn build(b: *Builder) void {
     });
 
     const drivers_module = b.addModule("drivers", .{
-        .root_source_file = b.path("drivers/drivers.zig"),
+        .root_source_file = b.path("../drivers/drivers.zig"),
         .code_model = .kernel,
         .target = target,
         .optimize = optimize,
@@ -42,7 +42,7 @@ pub fn build(b: *Builder) void {
 
     kernel_obj.root_module.addImport("drivers", drivers_module);
 
-    const out_path: []const u8 = "../../out";
+    const out_path: []const u8 = "../../obj";
 
     const install_artifact = b.addInstallArtifact(
         kernel_obj,
