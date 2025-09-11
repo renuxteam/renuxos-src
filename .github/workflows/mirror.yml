@@ -24,5 +24,5 @@ jobs:
 
       - name: Push to Codeberg
         run: |
-          git remote add codeberg ssh://git@codeberg.org/renuxteam/renuxos-src.git
+          git remote add codeberg ssh://git@codeberg.org/Renan2010/renuxos-src.git
           git push --mirror codeberg
