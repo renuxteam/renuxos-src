@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 #include "../console/include/console.h"
 #include "../../drivers/video/include/color.h"
 #include "../../drivers/video/include/framebuffer.h"
@@ -11,15 +12,22 @@ const char *ascii_logo = R"(
 | | \ \  __/ | | | |_| |>  <| |__| |____) |
 |_|  \_\___|_| |_|\__,_/_/\_\\____/|_____/ 
 )";
+void init_drivers(void) {
+    fb_init();
+    console_init();
+}
+
+void init_graphics(void) {
+    fb_clear(COLOR_DARK_GRAY);
+    console_set_text_color(COLOR_CYAN);
+}
 
 
 void kmain(void) {
-    fb_init();
-    console_init();
-    console_clear();
-    fb_clear(COLOR_BLACK);
-    console_set_text_color(COLOR_RED);
-    console_write(ascii_logo);
-    console_putchar('\n');
-    console_write("RenuxOS v0.1 Aurora \n");
+    init_drivers();
+    init_graphics();
+    println(ascii_logo);
+    println("RenuxOS v0.1 Aurora");
+    println("Welcome to Renux Shell");
 }
+

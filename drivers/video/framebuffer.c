@@ -3,12 +3,11 @@
 #include <limine.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "./include/video.h"
 
 
 // -----------------------------------------------------------------------------
 // Simple framebuffer implementation in C for RenuxOS
-// 
+//
 // This module provides basic framebuffer graphics functionality including:
 // - Framebuffer initialization using Limine boot protocol
 // - Pixel manipulation (drawing, clearing)
@@ -32,12 +31,12 @@ size_t fb_pitch = 0;           // Pitch (bytes per scanline)
 size_t fb_bpp = 0;             // Bits per pixel
 size_t fb_bytes_per_pixel = 0;  // Bytes per pixel (bpp / 8)
 
-size_t cursor_x = 0;
-size_t cursor_y = 0;
-const size_t CHAR_WIDTH = 8;
-const size_t CHAR_HEIGHT = 8;
-const size_t SCREEN_WIDTH = 1024;  // framebuffer width
-const size_t SCREEN_HEIGHT = 768;  // framebuffer height
+size_t cursor_x = 0;           // Cursor x position in pixels for put_char_cursor
+size_t cursor_y = 0;           // Cursor y position in pixels for put_char_cursor
+const size_t CHAR_WIDTH = 8;   // Width of a glyph in pixels
+const size_t CHAR_HEIGHT = 8;  // Height of a glyph in pixels
+const size_t SCREEN_WIDTH = 1024;  // Assumed screen width (fallback / usage in cursor)
+const size_t SCREEN_HEIGHT = 768;  // Assumed screen height (fallback / usage in cursor)
 
 // 8x8 bitmap font data for ASCII characters 32-127 (printable characters)
 // Each character is represented by 8 bytes (8 rows), where each byte represents
@@ -58,7 +57,7 @@ static const unsigned char font8x8_basic[96][8] = {
     {0x00,0xC6,0xCC,0x18,0x30,0x66,0xC6,0x00},
     // 38 '&'
     {0x38,0x6C,0x38,0x76,0xDC,0xCC,0x76,0x00},
-    // 39 '''
+    // 39 '\''
     {0x30,0x30,0x60,0x00,0x00,0x00,0x00,0x00},
     // 40 '('
     {0x0C,0x18,0x30,0x30,0x30,0x18,0x0C,0x00},
@@ -164,7 +163,7 @@ static const unsigned char font8x8_basic[96][8] = {
     {0x7E,0x06,0x0C,0x18,0x30,0x60,0x7E,0x00},
     // 91 '['
     {0x3C,0x30,0x30,0x30,0x30,0x30,0x3C,0x00},
-    // 92 '\'
+    // 92 '\\'
     {0xC0,0x60,0x30,0x18,0x0C,0x06,0x03,0x00},
     // 93 ']'
     {0x3C,0x0C,0x0C,0x0C,0x0C,0x0C,0x3C,0x00},
@@ -352,23 +351,26 @@ void fb_draw_char(size_t x, size_t y, char ch, uint32_t color) {
 }
 
 void fb_put_char_cursor(char c, uint32_t color) {
+    // If newline, move cursor to start of next text row
     if (c == '\n') {
         cursor_x = 0;
         cursor_y += CHAR_HEIGHT;
     } else {
+        // Draw the character at current cursor pixel position
         fb_draw_char(cursor_x, cursor_y, c, color);
-        cursor_x += CHAR_WIDTH;
+        cursor_x += CHAR_WIDTH; // Advance cursor by glyph width
     }
 
-    // Wrap line
+    // Wrap line if cursor goes beyond screen width
     if (cursor_x + CHAR_WIDTH > SCREEN_WIDTH) {
         cursor_x = 0;
         cursor_y += CHAR_HEIGHT;
     }
 
-    // Simple scroll (overwrite top)
+    // Simple scroll handling: if cursor goes beyond screen height, wrap to top
+    // TODO: implement proper vertical scrolling (shift framebuffer up)
     if (cursor_y + CHAR_HEIGHT > SCREEN_HEIGHT) {
-        cursor_y = 0; // could implementar scroll real depois
+        cursor_y = 0; // could implement real scroll later
     }
 }
 

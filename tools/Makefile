@@ -5,7 +5,7 @@ CC = clang
 AS = clang             # We'll use clang for assembly too
 CFLAGS = -ffreestanding -fno-stack-protector -fno-PIC -m64 -march=x86-64 \
          -mabi=sysv -mno-80387 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone \
-         -Wall -Wextra -mcmodel=kernel
+         -Wall -Wextra -mcmodel=kernel 
 BUILD_DIR = obj
 INCLUDE_DIR = include
 

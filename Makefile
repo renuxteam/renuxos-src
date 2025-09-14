@@ -12,13 +12,13 @@ ISO_DIR = /tmp/renuxos_iso
 
 LDFLAGS = -T linker/linker.ld -nostdlib -static -z max-page-size=0x1000
 
-.PHONY: all build iso clean run drivers kernel
+.PHONY: all build iso clean run drivers kernel tools libc
 
 all: build
 
 # Build drivers + kernel + link
-build: kernel  drivers
-	$(LD) $(LDFLAGS) $(shell find kernel/obj -name '*.o') $(shell find drivers/obj -name '*.o') -o $(TARGET)
+build: kernel  drivers libc tools
+	$(LD) $(LDFLAGS) $(shell find kernel/obj -name '*.o') $(shell find drivers/obj -name '*.o')  $(shell find libc/obj -name '*.o')  $(shell find tools/obj -name '*.o') -o $(TARGET)
 
 # Build all drivers
 drivers:
@@ -26,6 +26,13 @@ drivers:
 # Build kernel
 kernel:
 	$(MAKE) -C kernel -j$(JOBS)
+
+tools:
+	$(MAKE) -C tools -j$(JOBS)
+
+libc:
+	$(MAKE) -C libc -j$(JOBS)
+
 
 # Create ISO using Limine
 iso: build
@@ -61,6 +68,8 @@ clean:
 	rm -rf $(LIMINE_DIR) $(ISO_DIR) $(BUILD_DIR) $(ISO) $(TARGET)
 	$(MAKE) -C drivers clean
 	$(MAKE) -C kernel clean
+	$(MAKE) -C libc clean
+	$(MAKE) -C tools clean
 
 # Run in QEMU
 run: iso

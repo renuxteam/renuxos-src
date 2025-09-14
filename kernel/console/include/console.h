@@ -1,25 +1,35 @@
+// Header guard to prevent multiple inclusions
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <stdint.h>
-#include <stddef.h>
+#include <stdint.h>  // For fixed-width integer types
+#include <stddef.h>  // For size_t and other standard definitions
 
-// Inicializa o console
+// Initializes the console
 void console_init(void);
 
-// Escreve um caractere no console
+// Writes a single character to the console
 void console_putchar(char c);
 
-// Escreve uma string no console
+// Writes a string to the console
 void console_write(const char* str);
 
-// Limpa a tela do console
+// Clears the console screen
 void console_clear(void);
 
-// Define a cor do texto
+// Sets the text color
 void console_set_text_color(uint32_t color);
 
-// Define a cor do fundo
+// Sets the background color
 void console_set_background_color(uint32_t color);
+
+// Prints a string to the console (alternative function)
+void print(const char* str);
+
+// Prints a string followed by a newline to the console
+void println(const char* str);
+
+// Puts a character to the console (alternative function)
+void put_char(char c);
 
 #endif // CONSOLE_H
