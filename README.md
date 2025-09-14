@@ -3,16 +3,14 @@
 </p>
 
 <p align="center">
-  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with Zig.</strong>
+  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with C.</strong>
 </p>
 <p align="center">
   <img width="1306" height="882" alt="Captura de tela em 2025-09-07 18-33-33" src="https://github.com/user-attachments/assets/354546c8-b722-41df-9478-ce365413b91b" />
 </p>
 
-
-
 <p align="center">
-  <img alt="Main Language" src="https://img.shields.io/badge/language-Zig-orange.svg?style=for-the-badge">
+  <img alt="Main Language" src="https://img.shields.io/badge/language-C-blue.svg?style=for-the-badge">
   <img alt="Project Status" src="https://img.shields.io/badge/status-In%20Development-blue.svg?style=for-the-badge">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge">
   <a href="https://github.com/renuxteam/renuxos-src_old">
@@ -24,7 +22,8 @@
 
 Hi, I'm **Renan Lucas**, the creator of RenuxOS.
 
-After a long prototyping and exploration phase with **Rust**, I decided to take RenuxOS in a **lighter, sharper, and more personal direction**. This marked the beginning of a complete rewrite of the kernel (and the first real release!) in [**Zig**](https://ziglang.org/).
+After prototyping in **Rust**, I decided to take RenuxOS in a **lighter, sharper, and more personal direction**.  
+This marked the beginning of a complete rewrite of the kernel in **C** — the first true step toward a hacker-friendly system.
 
 This is the true beginning of a system built on the pillars of **clarity, modularity, and hacker-level control** — starting with our first official version: **Aurora**.
 
@@ -36,20 +35,8 @@ This is the true beginning of a system built on the pillars of **clarity, modula
 
 -  [x] *partial* 🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel.
 -  [x] 🧩 **Extreme Modularity:** Allowing every component of the system to be easily replaced or customized.
-- [x] 🛠️ **Built with the Right Tools:** Written primarily in **Zig**, with parts in **C** and **Assembly** where needed, for maximum control and simplicity.
+-  [x] 🛠️ **Built with the Right Tools:** Written primarily in **C**, with **Assembly** where needed, for maximum control and simplicity.
 -  [x] 🗂️ **Monorepo:** The entire source code lives in a single repository (`renuxos-src`) to simplify building, development, and collaboration.
-
-### Why Zig?
-
-While Rust is a fantastic language, it proved to be overly complex and heavy for my creative workflow. As someone with **AuDHD (Autism + ADHD)**, the simplicity and predictability of Zig align perfectly with how I think and code.
-
-> **Zig just fits my brain better.**
-> And that's exactly what RenuxOS needs to thrive.
-
--   🧘‍♂️ **Less Noise:** Direct and straightforward compiler errors without unnecessary complexity.
--   💡 **Clean Mental Model:** The language's clarity makes development more intuitive.
--   🔩 **Natural Integration:** Seamless interoperability with **C** and **Assembly**.
--   📦 **Integrated Build System:** No more external build systems. Just `zig build`, and you're done.
 
 ---
 
@@ -58,7 +45,7 @@ While Rust is a fantastic language, it proved to be overly complex and heavy for
 | Version      | Codename    | Status           | Main Focus                                           |
 |--------------|-------------|------------------|------------------------------------------------------|
 | *Prototype*  | *(none)*    | ❌ **Abandoned**  | Initial proof-of-concept in Rust.                    |
-| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Basic Zig kernel, boot, TTY, and modular structure.  |
+| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Basic C kernel, boot, TTY, and modular structure.    |
 | *Future*     | 🐆 **Jaguar** | 🔮 **Planned**   | Memory management, drivers, and multitasking.        |
 
 The old Rust-based prototype is still available for reference in the archive:  
@@ -70,9 +57,7 @@ The old Rust-based prototype is still available for reference in the archive:
 
 Ready to compile and run the kernel? All the detailed instructions, including prerequisites and platform-specific steps, are available on our official project wiki.
 
-The wiki is the single source of truth for building and testing RenuxOS.
-
-➡️ **[View the Build Guide on the Wiki](https://github.com/renuxteam/renuxos-src/wiki/Bulld-Project)**
+➡️ **[View the Build Guide on the Wiki](https://github.com/renuxteam/renuxos-src/wiki/Build-Project)**
 
 ---
 
@@ -94,11 +79,10 @@ Stay tuned for dev logs, demos, and upcoming documentation.
 
 ---
 
-🛠️ Built with `zig build` and a lot of love,  
+🛠️ Built with `make` and a lot of love,  
 — Renan Lucas
 
 ---
-
 
 ## Star History
 
