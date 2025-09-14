@@ -3,6 +3,8 @@
 #include <limine.h>
 #include <stdint.h>
 #include <stddef.h>
+#include "./include/video.h"
+
 
 // -----------------------------------------------------------------------------
 // Simple framebuffer implementation in C for RenuxOS
@@ -22,13 +24,13 @@
 // External declaration of Limine framebuffer request structure
 extern volatile struct limine_framebuffer_request framebuffer_request;
 
-// Internal framebuffer state variables
-static uint8_t* fb_addr = 0;          // Pointer to framebuffer memory
-static size_t fb_width = 0;           // Width of framebuffer in pixels
-static size_t fb_height = 0;          // Height of framebuffer in pixels
-static size_t fb_pitch = 0;           // Pitch (bytes per scanline)
-static size_t fb_bpp = 0;             // Bits per pixel
-static size_t fb_bytes_per_pixel = 0;  // Bytes per pixel (bpp / 8)
+// Framebuffer state variables (now exported)
+uint8_t* fb_addr = 0;          // Pointer to framebuffer memory
+size_t fb_width = 0;           // Width of framebuffer in pixels
+size_t fb_height = 0;          // Height of framebuffer in pixels
+size_t fb_pitch = 0;           // Pitch (bytes per scanline)
+size_t fb_bpp = 0;             // Bits per pixel
+size_t fb_bytes_per_pixel = 0;  // Bytes per pixel (bpp / 8)
 
 size_t cursor_x = 0;
 size_t cursor_y = 0;
