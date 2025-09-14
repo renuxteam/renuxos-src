@@ -22,8 +22,9 @@ all: $(OBJS)
 # For each .c file, create the corresponding .o file in the build directory
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)  # Create directory structure if it doesn't exist
-	$(CC) $(CFLAGS) -I$(dir $<)/include -I$(INCLUDE_DIR) -c $< -o $@
+	@ $(CC) $(CFLAGS) -I$(dir $<)/include -I$(INCLUDE_DIR) -c $< -o $@
 
 # Clean target - removes all build artifacts
 clean:
-	rm -rf $(BUILD_DIR)
+	@echo "CLEAN   $(BUILD_DIR)"
+	@ rm -rf $(BUILD_DIR)
