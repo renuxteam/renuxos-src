@@ -1,4 +1,5 @@
 #include "./include/framebuffer.h"
+#include "./include/color.h"
 #include <limine.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -28,6 +29,13 @@ static size_t fb_height = 0;          // Height of framebuffer in pixels
 static size_t fb_pitch = 0;           // Pitch (bytes per scanline)
 static size_t fb_bpp = 0;             // Bits per pixel
 static size_t fb_bytes_per_pixel = 0;  // Bytes per pixel (bpp / 8)
+
+size_t cursor_x = 0;
+size_t cursor_y = 0;
+const size_t CHAR_WIDTH = 8;
+const size_t CHAR_HEIGHT = 8;
+const size_t SCREEN_WIDTH = 1024;  // framebuffer width
+const size_t SCREEN_HEIGHT = 768;  // framebuffer height
 
 // 8x8 bitmap font data for ASCII characters 32-127 (printable characters)
 // Each character is represented by 8 bytes (8 rows), where each byte represents
@@ -341,6 +349,28 @@ void fb_draw_char(size_t x, size_t y, char ch, uint32_t color) {
     }
 }
 
+void fb_put_char_cursor(char c, uint32_t color) {
+    if (c == '\n') {
+        cursor_x = 0;
+        cursor_y += CHAR_HEIGHT;
+    } else {
+        fb_draw_char(cursor_x, cursor_y, c, color);
+        cursor_x += CHAR_WIDTH;
+    }
+
+    // Wrap line
+    if (cursor_x + CHAR_WIDTH > SCREEN_WIDTH) {
+        cursor_x = 0;
+        cursor_y += CHAR_HEIGHT;
+    }
+
+    // Simple scroll (overwrite top)
+    if (cursor_y + CHAR_HEIGHT > SCREEN_HEIGHT) {
+        cursor_y = 0; // could implementar scroll real depois
+    }
+}
+
+
 /**
  * Draw a string of text at specified coordinates
  * @param x X coordinate of the starting position
@@ -358,7 +388,7 @@ void fb_draw_string(size_t x, size_t y, const char* s) {
     // Iterate through each character in the string until null terminator
     while (s[i] != '\0') {
         // Draw the current character at current position with white color
-        fb_draw_char(cx, y, s[i], 0x00FFFFFF); // white color for now
+        fb_draw_char(cx, y, s[i], COLOR_WHITE); // use predefined white color
         
         cx += 8;  // Move to next character position (8 pixels per character width)
         ++i;      // Move to next character in string

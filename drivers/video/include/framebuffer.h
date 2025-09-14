@@ -11,6 +11,9 @@ void fb_init(void);
 // Clear screen with 0x00RRGGBB color (assumes 32bpp XRGB8888).
 void fb_clear(uint32_t color);
 
+void fb_put_char_cursor(char c, uint32_t color);
+
+
 // Put a pixel at (x,y). No bounds-check side effects (safe to call, will clip).
 void fb_put_pixel(size_t x, size_t y, uint32_t color);
 
