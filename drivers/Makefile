@@ -1,4 +1,4 @@
-# Drivers Makefile with ASM support
+# Drivers Makefile 
 CC = clang
 AS = clang             # We'll use clang for assembly too
 CFLAGS = -ffreestanding -fno-stack-protector -fno-PIC -m64 -march=x86-64 \
