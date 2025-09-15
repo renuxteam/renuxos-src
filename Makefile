@@ -1,7 +1,7 @@
 # Root Makefile for RenuxOS (C version)
 
-CC = clang
-LD = ld.lld
+CC = zig cc
+LD = zig ld.lld
 JOBS = $(shell nproc)
 
 TARGET = kernel.elf
@@ -10,7 +10,7 @@ BUILD_DIR = obj
 LIMINE_DIR = /tmp/limine
 ISO_DIR = /tmp/renuxos_iso
 
-LDFLAGS = -T linker/linker.ld -nostdlib -static -z max-page-size=0x1000
+LDFLAGS = -T linker/linker.ld -LTO -nostdlib -static -z max-page-size=0x1000
 
 .PHONY: all build iso clean run drivers kernel tools libc
 
@@ -18,24 +18,23 @@ all: build
 
 # Build drivers + kernel + link
 build: kernel drivers libc tools
-	@echo "LD      $(TARGET)"
-	@ $(LD) $(LDFLAGS) $(shell find kernel/obj -name '*.o') $(shell find drivers/obj -name '*.o')  $(shell find libc/obj -name '*.o')  $(shell find tools/obj -name '*.o') -o $(TARGET)
+	$(LD) $(LDFLAGS) $(shell find kernel/obj -name '*.o') $(shell find drivers/obj -name '*.o')  $(shell find libc/obj -name '*.o')  $(shell find tools/obj -name '*.o') -o $(TARGET)
 
 # Build all drivers
 drivers:
-	@ $(MAKE) -s -C drivers -j$(JOBS)
+	$(MAKE) -C drivers -j$(JOBS)
 
 # Build kernel
 kernel:
-	@ $(MAKE) -s -C kernel -j$(JOBS)
+	$(MAKE) -C kernel -j$(JOBS)
 
 # Build tools
 tools:
-	@ $(MAKE) -s -C tools -j$(JOBS)
+	$(MAKE) -C tools -j$(JOBS)
 
 # Build libc
 libc:
-	@ $(MAKE) -s -C libc -j$(JOBS)
+	$(MAKE) -C libc -j$(JOBS)
 
 # Create ISO using Limine
 iso: build

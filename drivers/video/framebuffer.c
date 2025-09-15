@@ -1,6 +1,6 @@
 #include "./include/framebuffer.h"
 #include "./include/color.h"
-#include <limine.h>
+#include "../include/limine.h"
 #include <stdint.h>
 #include <stddef.h>
 

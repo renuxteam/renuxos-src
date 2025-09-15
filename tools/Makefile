@@ -1,11 +1,12 @@
 # Drivers Makefile 
 
 # Compiler and assembler configuration
-CC = clang
-AS = clang             # We'll use clang for assembly too
-CFLAGS = -ffreestanding -fno-stack-protector -fno-PIC -m64 -march=x86-64 \
+CC = zig cc
+AS = zig cc           # We'll use clang for assembly too
+CFLAGS = -fno-stack-protector -fno-PIC -m64  \
          -mabi=sysv -mno-80387 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone \
-         -Wall -Wextra -mcmodel=kernel 
+         -Wall -Wextra -mcmodel=kernel -fno-sanitize=undefined
+TARGET = x86_64-freestanding-none
 BUILD_DIR = obj
 INCLUDE_DIR = include
 
@@ -23,16 +24,13 @@ all: $(OBJS)
 # Rule to compile C source files to object files
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)           # Create directory structure if it doesn't exist
-	@echo "CC      $<"             # Print CC like Linux
-	$(CC) $(CFLAGS) -I$(dir $<)/include -I$(INCLUDE_DIR) -c $< -o $@
+	$(CC) -target $(TARGET) $(CFLAGS) -I$(dir $<)/include -I$(INCLUDE_DIR) -c $< -o $@
 
 # Rule to compile assembly source files to object files
 $(BUILD_DIR)/%.o: %.S
 	@mkdir -p $(dir $@)
-	@echo "AS      $<"             # Print AS like Linux
 	$(AS) -c $< -o $@
 
 # Clean target - removes all build artifacts
 clean:
-	@echo "CLEAN   $(BUILD_DIR)"
-	@ rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)

@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <string.h>
 #include "../console/include/console.h"
 #include "../../drivers/video/include/color.h"
 #include "../../drivers/video/include/framebuffer.h"
