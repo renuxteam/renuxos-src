@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch with C.</strong>
+  <strong>A modular, neurodivergent-crafted hacker operating system, built from scratch in C.</strong>
 </p>
 <p align="center">
-  <img width="1306" height="882" alt="Captura de tela em 2025-09-07 18-33-33" src="https://github.com/user-attachments/assets/354546c8-b722-41df-9478-ce365413b91b" />
+  <img width="1306" height="882" alt="Screenshot" src="https://github.com/user-attachments/assets/354546c8-b722-41df-9478-ce365413b91b" />
 </p>
 
 <p align="center">
@@ -19,48 +19,47 @@
 </p>
 
 <p align="center">
-  <strong>RenuxOS is the first operating system to adopt <code>Zig cc</code> as its default compiler, 
-  pushing the boundaries of cross-compilation, portability, and reproducibility for C-based systems.</strong>
+  <strong>RenuxOS is the first operating system to adopt <code>Zig cc</code> as its default compiler, advancing cross-compilation, portability, and reproducibility for C-based systems.</strong>
 </p>
-
-## 🌀 A New Era for RenuxOS
-
-Hi, I'm **Renan Lucas**, the creator of RenuxOS.
-
-After prototyping in **Rust**, I decided to take RenuxOS in a **lighter, sharper, and more personal direction**.  
-This marked the beginning of a complete rewrite of the kernel in **C** — the first true step toward a hacker-friendly system.
-
-This is the true beginning of a system built on the pillars of **clarity, modularity, and hacker-level control** — starting with our first official version: **Aurora**.
 
 ---
 
 ## 🎯 Core Principles
 
-**RenuxOS** is an operating system crafted by a neurodivergent mind, for enthusiasts and hackers, with the following goals:
+**RenuxOS** is an operating system crafted by a neurodivergent mind for enthusiasts and hackers, built on the following principles:
 
--  [x] *partial* 🧠 **Hybrid Kernel:** To combine the security and modularity of a microkernel with the performance of a monolithic kernel.
--  [x] 🧩 **Extreme Modularity:** Allowing every component of the system to be easily replaced or customized.
--  [x] 🛠️ **Built with the Right Tools:** Written primarily in **C**, with **Assembly** where needed, for maximum control and simplicity.
--  [x] 🗂️ **Monorepo:** The entire source code lives in a single repository (`renuxos-src`) to simplify building, development, and collaboration.
+-  [x] 🧩 **Extreme Modularity:** Every component can be easily replaced or customized.
+-  [x] 🛠️ **Built with the Right Tools:** Written primarily in **C**, with **Assembly** as needed for maximum control and simplicity.
+-  [x] 🗂️ **Monorepo:** All source code lives in a single repository (`renuxos-src`) to simplify development and collaboration.
 
 ---
 
-## ✨ Features (Roadmap)
+## 🗺️ Roadmap
 
-| Version      | Codename    | Status           | Main Focus                                           |
-|--------------|-------------|------------------|------------------------------------------------------|
-| *Prototype*  | *(none)*    | ❌ **Abandoned**  | Initial proof-of-concept in Rust.                    |
-| **v0.1**     | 🌅 **Aurora** | 🔨 **In Progress** | Basic C kernel, boot, TTY, and modular structure.    |
-| *Future*     | 🐆 **Jaguar** | 🔮 **Planned**   | Memory management, drivers, and multitasking.        |
+| Version         | Codename    | Status                | Main Focus                                             |
+|-----------------|------------|-----------------------|--------------------------------------------------------|
+| *Prototype*     | *(none)*   | ❌ **Abandoned**      | Initial proof-of-concept in Rust.                      |
+| **v0.1**        | 🌅 **Aurora** | 🔨 **In progress**    | Basic C kernel, boot, TTY, and modular structure.      |
+| *Future*        | 🐆 **Jaguar** | 🔮 **Planned**        | Memory management, drivers, and multitasking.          |
 
-The old Rust-based prototype is still available for reference in the archive:  
+The old Rust-based prototype is still available for reference:  
 👉 **[renuxos-src_old (prototype)](https://github.com/renuxteam/renuxos-src_old)**
+
+---
+
+## 🌅 Aurora: The First Step
+
+**Aurora** is the official starting point for RenuxOS:  
+- Basic kernel in C, custom bootloader, and functional TTY.  
+- Modular structure for easy evolution and experimentation.  
+- Focused on architectural clarity and hacker freedom.
 
 ---
 
 ## 🚀 Getting Started
 
-Ready to compile and run the kernel? All the detailed instructions, including prerequisites and platform-specific steps, are available on our official project wiki.
+Ready to compile and run the kernel?  
+All detailed instructions, including prerequisites and platform-specific steps, are available on our official project wiki.
 
 ➡️ **[View the Build Guide on the Wiki](https://github.com/renuxteam/renuxos-src/wiki/Build-Project)**
 
@@ -68,7 +67,7 @@ Ready to compile and run the kernel? All the detailed instructions, including pr
 
 ## 🤝 How to Contribute
 
-This project is a personal journey, but it's also an open door for the community.
+This project is a personal journey, but also an open invitation for the community.
 
 > I'm not just building an OS; I'm building a vision for hacker freedom, architectural clarity, and accessibility in complexity.
 
