@@ -18,10 +18,6 @@
   </a>
 </p>
 
-<p align="center">
-  <strong>RenuxOS is the first operating system to adopt <code>Zig cc</code> as its default compiler, advancing cross-compilation, portability, and reproducibility for C-based systems.</strong>
-</p>
-
 ---
 
 ## 🎯 Core Principles
